@@ -1,0 +1,90 @@
+:root{
+    --background: #34495e;
+    --borderColor: #2ecc71;
+    --formColor: #191919;
+    --inputDefaultBorderColor: #3498db;
+
+}
+
+body{
+    margin: 0;
+    padding: 0px;
+    font-family: sans-serif;
+    background: var(--background);
+}
+
+.box{
+    position: absolute;
+    width: 300px;
+    padding: 40px;
+    background: var(--formColor);
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.box h1{
+    color: white;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.box input[type = "text"], .box input[type = "password"]{
+    border: 0;
+    background:  none;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid var(--inputDefaultBorderColor);
+    padding: 14px 10px;
+    width: 200px;
+    outline: none;
+    color: white;
+    border-radius: 24px;
+    transition: 0.25s;
+}
+
+.box input[type = "text"]:focus, .box input[type = "password"]:focus{
+    width: 280px;
+    border-color: var(--borderColor);
+}
+
+.box input[type = "text"]:hover, .box input[type = "password"]:hover{
+    width: 280px;
+    border-color: var(--borderColor);
+}
+
+.box button{
+    border: 0;
+    background:  none;
+    display: block;
+    margin: 20px auto;
+    margin-bottom: 5px;
+    text-align: center;
+    border: 2px solid var(--borderColor);
+    padding: 14px 40px;
+    outline: none;
+    color: white;
+    border-radius: 24px;
+    transition: 0.25s;
+    cursor: pointer;
+}
+
+.box button:hover{
+    background: var(--borderColor);
+}
+
+.text{
+    color: white;
+    font: sans-serif;
+    font-size: 12px;
+}
+
+a:hover{
+    color: var(--borderColor);
+}
+
+.dsol{
+    display: none;
+}

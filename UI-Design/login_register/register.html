@@ -1,0 +1,21 @@
+<!-- LOGIN page -->
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>EKO Patrol - Register</title>
+        <link rel="stylesheet" href="./login_register.css">
+        <link rel="stylesheet" href="./login_register.js">
+    </head>
+
+    <body>
+        <form class="box" autocomplete="off" id="reg">
+            <h1>Register</h1>
+            <input type="text" name="user" placeholder="Username" id="u" required>
+            <input type="text" name="email" placeholder="email" id="e" required>
+            <input type="password" name="pass" placeholder="Password" id="p" required>
+            <input type="password" name="rPass" placeholder="Repeat password" id="rp" required>
+            <button onclick="signUp(FormData)">Register</button>
+            <span class="text">Already registred? </span><a href="#" class="text">Login</a>
+        </form>
+    </body>
+</html>
