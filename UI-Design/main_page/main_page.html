@@ -1,0 +1,325 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="./main_page.css">
+        <title>ECO Patrol</title>
+        <link rel="icon" href="logo.jpg">
+        <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+    </head>
+    <body onload="init()">
+
+      <nav class="navbar" id="guest">
+        <ul class="navbar-nav">
+          <li class="logo">
+            <a href="#" class="nav-link">     <!-- link to page -->
+              <span class="link-text logo-text">Eco Patrol</span>
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                data-prefix="fad"
+                data-icon="angle-double-right"
+                role="img"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                class="svg-inline--fa fa-angle-double-right fa-w-14 fa-5x"
+                ><g class="fa-group">
+                  <path
+                    fill="currentColor"
+                    d="M224 273L88.37 409a23.78 23.78 0 0 1-33.8 0L32 386.36a23.94 23.94 0 0 1 0-33.89l96.13-96.37L32 159.73a23.94 23.94 0 0 1 0-33.89l22.44-22.79a23.78 23.78 0 0 1 33.8 0L223.88 239a23.94 23.94 0 0 1 .1 34z"
+                    class="fa-secondary"
+                  ></path>
+                  <path
+                    fill="currentColor"
+                    d="M415.89 273L280.34 409a23.77 23.77 0 0 1-33.79 0L224 386.26a23.94 23.94 0 0 1 0-33.89L320.11 256l-96-96.47a23.94 23.94 0 0 1 0-33.89l22.52-22.59a23.77 23.77 0 0 1 33.79 0L416 239a24 24 0 0 1-.11 34z"
+                    class="fa-primary"
+                  ></path>
+                </g>
+              </svg>
+            </a>
+          </li>
+    
+          <li class="nav-item">
+            <a href="../loading/loading.html?fun=singIn" class="nav-link" onclick="singIn()">     <!-- link to page -->
+              <svg 
+                aria-hidden="true" 
+                focusable="false" 
+                data-prefix="fas" 
+                data-icon="sign-in-alt" 
+                class="svg-inline--fa fa-sign-in-alt fa-w-16" 
+                role="img" xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 512 512"
+                ><path 
+                  fill="currentColor" 
+                  d="M416 448h-84c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h84c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32h-84c-6.6 0-12-5.4-12-12V76c0-6.6 5.4-12 12-12h84c53 0 96 43 96 96v192c0 53-43 96-96 96zm-47-201L201 79c-15-15-41-4.5-41 17v96H24c-13.3 0-24 10.7-24 24v96c0 13.3 10.7 24 24 24h136v96c0 21.5 26 32 41 17l168-168c9.3-9.4 9.3-24.6 0-34z"
+                ></path>
+              </svg>
+              <span class="link-text">Sign in</span>
+            </a>
+          </li>
+    
+          <li class="nav-item">
+            <a href="../login_register/register.html" class="nav-link" onclick="singUp()">     <!-- link to page -->
+              <svg 
+                aria-hidden="true" 
+                focusable="false" 
+                data-prefix="fas" 
+                data-icon="user-plus" 
+                class="svg-inline--fa fa-user-plus fa-w-20" 
+                role="img" 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 640 512"
+                ><path 
+                  fill="currentColor" 
+                  d="M624 208h-64v-64c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v64h-64c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h64v64c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-64h64c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm-400 48c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"
+                ></path>
+              </svg>
+              <span class="link-text">Sign up</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+              <a href="#" class="nav-link" onclick="search()">     <!-- link to page -->
+                  <svg 
+                    aria-hidden="true" 
+                    focusable="false" 
+                    data-prefix="fas"
+                    data-icon="search" 
+                    class="svg-inline--fa fa-search fa-w-16" 
+                    role="img" 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 512 512"
+                    ><path 
+                      fill="currentColor" 
+                      d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
+                    ></path>
+                  </svg>
+                <span class="link-text">Search</span>
+              </a>
+            </li>
+    
+          <li class="nav-item">
+            <a href="C:\Users\Aleksa\Desktop\EcoPatrol\eco-patrol-ui\UI-Design\about_us\about_us.html" class="nav-link" target="_blank" >     <!-- link to page -->
+              <!---->
+              <svg 
+                aria-hidden="true" 
+                focusable="false" 
+                data-prefix="fas" 
+                data-icon="address-card" 
+                class="svg-inline--fa fa-address-card fa-w-18" 
+                role="img" 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 576 512">
+                <path 
+                  fill="currentColor" 
+                  d="M528 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h480c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm-352 96c35.3 0 64 28.7 64 64s-28.7 64-64 64-64-28.7-64-64 28.7-64 64-64zm112 236.8c0 10.6-10 19.2-22.4 19.2H86.4C74 384 64 375.4 64 364.8v-19.2c0-31.8 30.1-57.6 67.2-57.6h5c12.3 5.1 25.7 8 39.8 8s27.6-2.9 39.8-8h5c37.1 0 67.2 25.8 67.2 57.6v19.2zM512 312c0 4.4-3.6 8-8 8H360c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16zm0-64c0 4.4-3.6 8-8 8H360c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16zm0-64c0 4.4-3.6 8-8 8H360c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16z"
+                ></path>
+              </svg>
+              <span class="link-text">About us</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <nav class="navbar" id="user">
+        <ul class="navbar-nav">
+          <li class="logo">
+            <a href="#" class="nav-link">     <!-- link to page -->
+              <span class="link-text logo-text">Eco Patrol</span>
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                data-prefix="fad"
+                data-icon="angle-double-right"
+                role="img"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                class="svg-inline--fa fa-angle-double-right fa-w-14 fa-5x"
+                ><g class="fa-group">
+                  <path
+                    fill="currentColor"
+                    d="M224 273L88.37 409a23.78 23.78 0 0 1-33.8 0L32 386.36a23.94 23.94 0 0 1 0-33.89l96.13-96.37L32 159.73a23.94 23.94 0 0 1 0-33.89l22.44-22.79a23.78 23.78 0 0 1 33.8 0L223.88 239a23.94 23.94 0 0 1 .1 34z"
+                    class="fa-secondary"
+                  ></path>
+                  <path
+                    fill="currentColor"
+                    d="M415.89 273L280.34 409a23.77 23.77 0 0 1-33.79 0L224 386.26a23.94 23.94 0 0 1 0-33.89L320.11 256l-96-96.47a23.94 23.94 0 0 1 0-33.89l22.52-22.59a23.77 23.77 0 0 1 33.79 0L416 239a24 24 0 0 1-.11 34z"
+                    class="fa-primary"
+                  ></path>
+                </g>
+              </svg>
+            </a>
+          </li>
+    
+          <li class="nav-item">
+            <a href="../loading/loading.html?fun=singOut" class="nav-link" onclick="singOut()">     <!-- link to page -->
+              <svg 
+                aria-hidden="true" 
+                focusable="false" 
+                data-prefix="fas" 
+                data-icon="sign-out-alt" 
+                class="svg-inline--fa fa-sign-out-alt fa-w-16" 
+                role="img" 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 512 512"
+                ><path 
+                  fill="currentColor" 
+                  d="M497 273L329 441c-15 15-41 4.5-41-17v-96H152c-13.3 0-24-10.7-24-24v-96c0-13.3 10.7-24 24-24h136V88c0-21.4 25.9-32 41-17l168 168c9.3 9.4 9.3 24.6 0 34zM192 436v-40c0-6.6-5.4-12-12-12H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h84c6.6 0 12-5.4 12-12V76c0-6.6-5.4-12-12-12H96c-53 0-96 43-96 96v192c0 53 43 96 96 96h84c6.6 0 12-5.4 12-12z"
+                ></path>
+              </svg>
+              <span class="link-text">Sign out</span>
+            </a>
+          </li>
+    
+          <li class="nav-item">
+            <a href="#" class="nav-link">     <!-- link to page -->
+              <svg 
+                aria-hidden="true" 
+                focusable="false" 
+                data-prefix="fas" 
+                data-icon="user" 
+                class="svg-inline--fa fa-user fa-w-14" 
+                role="img" 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 448 512"
+                ><path 
+                  fill="currentColor" 
+                  d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"
+                ></path>
+              </svg>
+              <span class="link-text">Account</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+              <a href="#" class="nav-link" onclick="search()">     <!-- link to page -->
+                  <svg 
+                    aria-hidden="true" 
+                    focusable="false" 
+                    data-prefix="fas"
+                    data-icon="search" 
+                    class="svg-inline--fa fa-search fa-w-16" 
+                    role="img" 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 512 512"
+                    >
+                    <path 
+                      fill="currentColor" 
+                      d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
+                    ></path>
+                  </svg>
+                <span class="link-text">Search</span>
+              </a>
+          </li>
+
+          <li class="nav-item">
+              <a href="#" class="nav-link" onclick="toggleOutposts()">     <!-- link to page -->
+                <svg 
+                  aria-hidden="true" 
+                  focusable="false" 
+                  data-prefix="fas" 
+                  data-icon="map-pin" 
+                  class="svg-inline--fa fa-map-pin fa-w-9" 
+                  role="img" 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  viewBox="0 0 288 512"
+                  ><path 
+                    fill="currentColor" 
+                    d="M112 316.94v156.69l22.02 33.02c4.75 7.12 15.22 7.12 19.97 0L176 473.63V316.94c-10.39 1.92-21.06 3.06-32 3.06s-21.61-1.14-32-3.06zM144 0C64.47 0 0 64.47 0 144s64.47 144 144 144 144-64.47 144-144S223.53 0 144 0zm0 76c-37.5 0-68 30.5-68 68 0 6.62-5.38 12-12 12s-12-5.38-12-12c0-50.73 41.28-92 92-92 6.62 0 12 5.38 12 12s-5.38 12-12 12z"
+                  ></path>
+                </svg>
+                <span class="link-text">Outposts</span>
+              </a>
+          </li>
+
+          <li class="nav-item">
+            <label>
+              <a href="#" class="nav-link" onclick="toggleOffice()">     <!-- link to page -->
+                  <svg 
+                    class="myClass"
+                    aria-hidden="true" 
+                    focusable="false" 
+                    data-prefix="fas" 
+                    data-icon="thumbtack" 
+                    class="svg-inline--fa fa-thumbtack fa-w-12" 
+                    role="img" 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 384 512"
+                    ><path 
+                      fill="currentColor" 
+                      d="M298.028 214.267L285.793 96H328c13.255 0 24-10.745 24-24V24c0-13.255-10.745-24-24-24H56C42.745 0 32 10.745 32 24v48c0 13.255 10.745 24 24 24h42.207L85.972 214.267C37.465 236.82 0 277.261 0 328c0 13.255 10.745 24 24 24h136v104.007c0 1.242.289 2.467.845 3.578l24 48c2.941 5.882 11.364 5.893 14.311 0l24-48a8.008 8.008 0 0 0 .845-3.578V352h136c13.255 0 24-10.745 24-24-.001-51.183-37.983-91.42-85.973-113.733z"
+                    ></path>
+                  </svg>
+                <span class="link-text">Main office</span>
+              </a>
+            </label>
+          </li>
+
+          <li class="nav-item">
+            <a href="#" class="nav-link" onclick="toggleLandfills()">     <!-- link to page -->
+              <svg 
+                aria-hidden="true" 
+                focusable="false" 
+                data-prefix="fas" 
+                data-icon="dumpster" 
+                class="svg-inline--fa fa-dumpster fa-w-18" 
+                role="img" 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 576 512"
+                ><path 
+                  fill="currentColor" 
+                  d="M560 160c10.4 0 18-9.8 15.5-19.9l-24-96C549.7 37 543.3 32 536 32h-98.9l25.6 128H560zM272 32H171.5l-25.6 128H272V32zm132.5 0H304v128h126.1L404.5 32zM16 160h97.3l25.6-128H40c-7.3 0-13.7 5-15.5 12.1l-24 96C-2 150.2 5.6 160 16 160zm544 64h-20l4-32H32l4 32H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h28l20 160v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h320v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16l20-160h28c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16z"
+                ></path>
+              </svg>
+              <span class="link-text">Landfill</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="#" class="nav-link" onclick="toggleMarkedLocations()">     <!-- link to page -->
+              <svg 
+                aria-hidden="true" 
+                focusable="false" 
+                data-prefix="fas" 
+                data-icon="map-marker" 
+                class="svg-inline--fa fa-map-marker fa-w-12" 
+                role="img" 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 384 512"
+                ><path 
+                  fill="currentColor" 
+                  d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0z"
+                ></path>
+              </svg>
+              <span class="link-text">Marked locations</span>
+            </a>
+          </li>
+    
+          <li class="nav-item">
+            <a href="C:\Users\Aleksa\Desktop\EcoPatrol\eco-patrol-ui\UI-Design\about_us\about_us.html" class="nav-link" target="_blank">     <!-- link to page -->
+              <svg 
+                aria-hidden="true" 
+                focusable="false" 
+                data-prefix="fas" 
+                data-icon="address-card" 
+                class="svg-inline--fa fa-address-card fa-w-18" 
+                role="img" 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 576 512">
+                <path 
+                  fill="currentColor" 
+                  d="M528 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h480c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm-352 96c35.3 0 64 28.7 64 64s-28.7 64-64 64-64-28.7-64-64 28.7-64 64-64zm112 236.8c0 10.6-10 19.2-22.4 19.2H86.4C74 384 64 375.4 64 364.8v-19.2c0-31.8 30.1-57.6 67.2-57.6h5c12.3 5.1 25.7 8 39.8 8s27.6-2.9 39.8-8h5c37.1 0 67.2 25.8 67.2 57.6v19.2zM512 312c0 4.4-3.6 8-8 8H360c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16zm0-64c0 4.4-3.6 8-8 8H360c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16zm0-64c0 4.4-3.6 8-8 8H360c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16z"
+                ></path>
+              </svg>
+              <span class="link-text">About us</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <main id="main">
+        <div id="map"></div>
+      </main>
+
+      <script src="./main_page.js"></script>
+      
+    </body>
+</html>
