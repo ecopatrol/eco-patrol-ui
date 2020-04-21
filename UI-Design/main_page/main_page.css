@@ -142,8 +142,13 @@ main{
 #guest{
     visibility: visible;
 }
+
 #user{
     visibility: hidden;
+}
+
+#map{
+    height: 100%;
 }
 
 /*--------------------------------------------------------*/

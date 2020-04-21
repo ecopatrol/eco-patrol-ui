@@ -7,10 +7,27 @@
 var guest = document.getElementById("guest"); //get navBar for guest
 var user = document.getElementById("user"); //get navBar for user
 
-var timer, map;
+var map;
+var allLayers = [];
 
-//NOTE: this should be resolved with addEventListener and removeEventListener, but don't know how
-var listenerActive; //boolean to activate or deactivate added event listeners (primitive way, but at this point don't know better)
+//JavaScript Enum
+const Tag = {
+    OFFICE: "Main office",
+    PLANT: "Plant",
+    LANDFILL: "Landfill",
+    MARKEDLOCATION: "Marked location"
+};
+
+const CustomIcons = {
+    GREEN_ICON: new L.Icon({
+        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    })
+};
 
 //initialization of map for webpage
 function init(){
@@ -18,16 +35,17 @@ function init(){
     //TODO: make apropriate page parametar function/handler
     resolveParameters(location.search.substring(1));
 
+    mapInit();
 
-    map = createMap();
-    setCurrentPosition(map);
-
-
-    //console.log(document.getElementById('map').children[0]);
-    document.getElementById('map').children[0].addEventListener("mousedown", handleMouseDown, false);//mouse long press handler; listener to start timer
-    document.getElementById('map').children[0].addEventListener("mouseup", handleMouseUp, false); //listener to reset timer if released befor end of timeout
-    document.getElementById('map').children[0].addEventListener("mousemove", handleMouseUp, false); //listener to reset timer if map moved with cursor 
-
+    let selectedPosition;
+    map.on('click', function(ev){
+        console.log(ev);
+        let latlng = map.mouseEventToLatLng(ev.originalEvent);
+        if (selectedPosition != undefined){
+            map.removeLayer(selectedPosition);
+        }
+        selectedPosition = L.marker([latlng.lat, latlng.lng]).addTo(map);
+    });
 
 }  
 
@@ -52,27 +70,75 @@ function resolveParameters(param){
     }
 }
 
-//starts timer, after dilay executes lambda function
-function handleMouseDown(event){
-    if (!listenerActive) return;    //guest can't use this listener, only user can
-    if (event.which != 1) return;   //simple event filter
-    //console.log(event);
+function mapInit(){
+    map = L.map("map");
+    
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: "mapbox/streets-v11",
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: "pk.eyJ1IjoibWwxNzA3MjIiLCJhIjoiY2s5YTVuMGZqMDRkajNmbnZ0M3dpZmw5aCJ9.-DN1GUj4G7MaDepRdj8V1g"
+    }).addTo(map);
+    setCurrentPosition();
 
-    timer = window.setTimeout(function(){
-        //insert code you want to execute here
-        //TODO: markes selected location on map and possiblly something more
-        console.log("Hello world");
-
-
-    }, 700); //change delay of labmbda function execution (in ms) 
+    addLocations();
 }
 
-//reset timer
-function handleMouseUp(event){
-    if (event.which != 1 || (event.type == "mousemove" && event.which != 1)) return;   //simple event filter
-    //console.log(event);
+function addLocations(){
 
-    clearTimeout(timer);
+    let groups = makeLayerArray();
+
+    for(let i = 0; i < groups.length; i++){
+        allLayers.push({
+            layerName: groups[i].layerName,
+            layerGroup: L.layerGroup(groups[i].arrayOfMarkers)
+        });
+    }
+}
+
+function makeLayerArray(){
+    let location = [
+        
+        [44.871163, 20.638895, 'Main office', 'Main office Pancevo'],
+        [44.882502, 20.456271, 'Plant', 'Plant 8'],
+        [44.827720, 20.388044, 'Plant', 'Plant 5'],
+        [44.811615, 20.488727, 'Main office', 'Main office Belgrad'],
+        [44.778830, 20.497828, 'Plant', 'Plant 1'],
+        [44.886812, 20.627040, 'Landfill', 'Landfill 1'],
+        [44.791046, 20.472462, 'Plant', 'Plant 2'],        
+        [44.848452, 20.375347, 'Plant', 'Plant 4'],        
+        [44.817660, 20.488679, 'Plant', 'Plant 6'],
+        [44.864166, 20.651177, 'Main office', 'Main office Pancevo'],
+        [44.747485, 20.447991, 'Plant', 'Plant 7'],        
+        [44.828683, 20.458060, 'Plant', 'Plant 9'],        
+        [44.796462, 20.505937, 'Plant', 'Plant 3'],
+        [44.766906, 20.409335, 'Plant', 'Plant 10'],
+        [44.887581, 20.782556, 'Landfill', 'Landfill 2']
+    ];
+    if (location == undefined) return location;
+
+    let differentGroups = [];
+    for (let i = 0; i < location.length; i++){
+        if (!differentGroups.includes(location[i][2]))
+            differentGroups.push(location[i][2]);
+    }
+    for (let i = 0; i < differentGroups.length; i++){
+        differentGroups[differentGroups.indexOf(differentGroups[i])] = {
+            layerName: differentGroups[i],
+            arrayOfMarkers: []
+        };
+    }
+    for (let i = 0; i < differentGroups.length; i++){
+        for (let j = 0; j < location.length; j++){
+            if (differentGroups[i].layerName == location[j][2]){
+                differentGroups[i].arrayOfMarkers.push(L.marker([location[j][0],location[j][1]]).bindPopup(location[j][3]));
+            }
+        }
+    }
+
+    return differentGroups;
 }
 
 //if needed, can be used
@@ -94,114 +160,100 @@ function findLocation(){
     dontWork();
 }
 
-function toggleOutposts(){
-    dontWork();
+var toggleOffice = false;
+function on_offOfince(){
+    toggleOffice = !toggleOffice;
+    
+    if (toggleOffice){
+        for(let i = 0; i < allLayers.length; i++){
+            if (allLayers[i].layerName == Tag.OFFICE){
+                allLayers[i].layerGroup.addTo(map);
+                break;
+            }
+        }
+    }else{
+        for(let i = 0; i < allLayers.length; i++){
+            if (allLayers[i].layerName == Tag.OFFICE){
+                map.removeLayer(allLayers[i].layerGroup);
+                break;
+            }
+        }
+    }
 }
 
-function toggleOffice(){
-    dontWork();
+var toggleOutposts = false;
+function on_offOutposts(){
+    toggleOutposts = !toggleOutposts;
+    
+    if (toggleOutposts){
+        for(let i = 0; i < allLayers.length; i++){
+            if (allLayers[i].layerName == Tag.PLANT){
+                allLayers[i].layerGroup.addTo(map);
+                break;
+            }
+        }
+    }else{
+        for(let i = 0; i < allLayers.length; i++){
+            if (allLayers[i].layerName == Tag.PLANT){
+                map.removeLayer(allLayers[i].layerGroup);
+                break;
+            }
+        }
+    }
 }
 
-function toggleLandfills(){
-    dontWork();
+var toggleLandfills = false;
+function on_offLandfills(){
+    toggleLandfills = !toggleLandfills;
+    
+    if (toggleLandfills){
+        for(let i = 0; i < allLayers.length; i++){
+            if (allLayers[i].layerName == Tag.LANDFILL){
+                allLayers[i].layerGroup.addTo(map);
+                break;
+            }
+        }
+    }else{
+        for(let i = 0; i < allLayers.length; i++){
+            if (allLayers[i].layerName == Tag.LANDFILL){
+                map.removeLayer(allLayers[i].layerGroup);
+                break;
+            }
+        }
+    }
 }
 
-function toggleMarkedLocations(){
-    dontWork();
+var toggleMarkedLocation = false;
+function on_offMarkedLocations(){
+    toggleMarkedLocation = !toggleMarkedLocation;
+    
+    if (toggleMarkedLocation){
+        for(let i = 0; i < allLayers.length; i++){
+            if (allLayers[i].layerName == Tag.MARKEDLOCATION){
+                allLayers[i].layerGroup.addTo(map);
+                break;
+            }
+        }
+    }else{
+        for(let i = 0; i < allLayers.length; i++){
+            if (allLayers[i].layerName == Tag.MARKEDLOCATION){
+                map.removeLayer(allLayers[i].layerGroup);
+                break;
+            }
+        }
+    }
 }
 
 function dontWork(){
     alert("Sorry, not implemented yet");
 }
 
-
-
-//TODO: better 'constructor' function needed
-function createMap(){
-    map = new OpenLayers.Map("map");
-    map.addLayer(new OpenLayers.Layer.OSM());
-    
-
-    map.addControls([
-        new OpenLayers.Control.MousePosition(),
-        new OpenLayers.Control.ScaleLine(),
-        new OpenLayers.Control.LayerSwitcher(),
-        new OpenLayers.Control.Navigation(),
-        new OpenLayers.Control.Permalink({ anchor: true })
-    ]);
-
-    
-    let markers = [
-        [44.864166, 20.651177, 'Main office'],
-        [44.871163, 20.638895, 'Main office'],
-        [44.811615, 20.488727, 'Main office'],
-        [44.778830, 20.497828, 'Plant'],
-        [44.791046, 20.472462, 'Plant'],
-        [44.796462, 20.505937, 'Plant'],
-        [44.848452, 20.375347, 'Plant'],
-        [44.827720, 20.388044, 'Plant'],
-        [44.817660, 20.488679, 'Plant'],
-        [44.747485, 20.447991, 'Plant'],
-        [44.882502, 20.456271, 'Plant'],
-        [44.828683, 20.458060, 'Plant'],
-        [44.766906, 20.409335, 'Plant'],
-        [44.886812, 20.627040, 'Landfill'],
-        [44.887581, 20.782556, 'Landfill']
-    ];
-
-    epsg4326 = new OpenLayers.Projection("EPSG:4326");
-    projectTo = map.getProjectionObject(); //The map projection (Spherical Mercator)
-    let lonLat = new OpenLayers.LonLat(8.0, 50.3).transform(epsg4326, projectTo);
-    let zoom = 7;
-    if (!map.getCenter()) {
-        map.setCenter(lonLat, zoom);
-    }
-  
-    // Put your point-definitions here
-    let radius = 4;
-    let look = ["red", "blue", "yellow"];
-    let layerName = [markers[0][2]];
-    let styleArray = [new OpenLayers.StyleMap({ pointRadius: radius, fillColor: look[0], fillOpacity: 0.5 })];
-    let vectorLayer = [new OpenLayers.Layer.Vector(layerName[0], { styleMap: styleArray[0] })];		// First element defines first Layer
-  
-    let j = 0;
-    for (let i = 1; i < markers.length; i++) {
-        if (!layerName.includes(markers[i][2])) {
-            j++;
-            layerName.push(markers[i][2]);															// If new layer name found it is created
-            styleArray.push(new OpenLayers.StyleMap({ pointRadius: radius, fillColor: look[j % look.length], fillOpacity: 0.5 }));
-            vectorLayer.push(new OpenLayers.Layer.Vector(layerName[j], { styleMap: styleArray[j] }));
-        }
-    }
-  
-      //Loop through the markers array
-    for (let i = 0; i < markers.length; i++) {
-        let lon = markers[i][1];
-        let lat = markers[i][0];
-        let feature = new OpenLayers.Feature.Vector(
-            new OpenLayers.Geometry.Point(lon, lat).transform(epsg4326, projectTo),
-            { description: "marker number " + i }
-            //see http://dev.openlayers.org/docs/files/OpenLayers/Feature/Vector-js.html#OpenLayers.Feature.Vector.Constants for more options
-        );
-        vectorLayer[layerName.indexOf(markers[i][2])].addFeatures(feature);
-    }
-  
-    for (let i = 0; i < layerName.length; i++) {
-        map.addLayer(vectorLayer[i]);
-    }
-
-
-
-    return map;
-}
-
 //at this moment doesn't need changing
 function setCurrentPosition(content){
 
     navigator.geolocation.getCurrentPosition(function success(pos){
-        let position = new OpenLayers.LonLat(pos.coords.longitude, pos.coords.latitude).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")),
-            zoom = 10;
-        content.setCenter(position, zoom);
+       map.setView([pos.coords.latitude, pos.coords.longitude], 11);
+       let m = L.marker([pos.coords.latitude, pos.coords.longitude]).bindPopup("Me").addTo(map);
     },function error(err){
         throw Error("Error with finding current position");
     },{

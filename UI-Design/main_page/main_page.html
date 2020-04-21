@@ -1,6 +1,12 @@
 <html>
     <head>
         <link rel="stylesheet" href="./main_page.css">
+        
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin=""
+        />
+
         <title>ECO Patrol</title>
         <link rel="icon" href="../about_us/slike/logo.jpg"> <!--Tab Ikonica-->
     </head>
@@ -220,7 +226,7 @@
 
           <!--Outposts item-->
           <li class="nav-item">
-              <a href="#" class="nav-link" onclick="toggleOutposts()">     <!-- no need for link to page -->
+              <a href="#" class="nav-link" onclick="on_offOutposts()">     <!-- no need for link to page -->
                 <svg 
                   aria-hidden="true" 
                   focusable="false" 
@@ -241,7 +247,7 @@
 
           <!--office item-->
           <li class="nav-item">
-            <a href="#" class="nav-link" onclick="toggleOffice()">     <!-- no need for link to page -->
+            <a href="#" class="nav-link" onclick="on_offOfince()">     <!-- no need for link to page -->
                 <svg 
                   class="myClass"
                   aria-hidden="true" 
@@ -263,7 +269,7 @@
 
           <!--landfills item-->
           <li class="nav-item">
-            <a href="#" class="nav-link" onclick="toggleLandfills()">     <!-- no need for link to page -->
+            <a href="#" class="nav-link" onclick="on_offLandfills()">     <!-- no need for link to page -->
               <svg 
                 aria-hidden="true" 
                 focusable="false" 
@@ -284,7 +290,7 @@
 
           <!--marked locations item-->
           <li class="nav-item">
-            <a href="#" class="nav-link" onclick="toggleMarkedLocations()">     <!-- no need for link to page -->
+            <a href="#" class="nav-link" onclick="on_offMarkedLocations()">     <!-- no need for link to page -->
               <svg 
                 aria-hidden="true" 
                 focusable="false" 
@@ -332,7 +338,11 @@
       </main>
 
       <script src="./main_page.js"></script>
-      <script src="http://www.openlayers.org/api/OpenLayers.js"></script> 
+
+      <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin="">
+      </script>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
      
     </body>
