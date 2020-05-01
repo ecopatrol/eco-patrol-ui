@@ -8,6 +8,7 @@ var guest; //get navBar for guest
 var user;//get navBar for user
 
 var userLocation;
+var userLogged;
 
 var map;
 var allLayers = [];
@@ -20,28 +21,21 @@ const Tag = {
     MARKEDLOCATION: "Marked location"
 };
 
+//paths to icons (from this js file)
 const MarkerColor = {
-    BLACK:      "../Leaflet_Icon/marker-icon-black.png",
-    BLUE:       "../Leaflet_Icon/marker-icon-blue.png",
-    GOLD:       "../Leaflet_Icon/marker-icon-gold.png",
-    GREEN:      "../Leaflet_Icon/marker-icon-green.png",
-    GRAY:       "../Leaflet_Icon/marker-icon-grey.png",
-    ORANGE:     "../Leaflet_Icon/marker-icon-orange.png",
-    RED:        "../Leaflet_Icon/marker-icon-red.png",
-    VIOLET:     "../Leaflet_Icon/marker-icon-violet.png",
-    YELLOW:     "../Leaflet_Icon/marker-icon-yellow.png"
+    BLACK:      "../Leaflet_Icon/marker-icon-black.png",    //
+    BLUE:       "../Leaflet_Icon/marker-icon-blue.png",     //user location
+    GOLD:       "../Leaflet_Icon/marker-icon-gold.png",     //selected area
+    GREEN:      "../Leaflet_Icon/marker-icon-green.png",    //layer
+    GRAY:       "../Leaflet_Icon/marker-icon-grey.png",     //layer
+    ORANGE:     "../Leaflet_Icon/marker-icon-orange.png",   //layer
+    RED:        "../Leaflet_Icon/marker-icon-red.png",      //layer
+    VIOLET:     "../Leaflet_Icon/marker-icon-violet.png",   //layer
+    YELLOW:     "../Leaflet_Icon/marker-icon-yellow.png"    //
 };
 const MarkerShadow = "../Leaflet_Icon/marker-shadow.png";
 
-var myCustomIcon = new L.Icon({
-    iconUrl: MarkerColor.GOLD,
-    shadowUrl: MarkerShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
-
+const layerIcon = [makeIcon(MarkerColor.GREEN), makeIcon(MarkerColor.GRAY), makeIcon(MarkerColor.ORANGE), makeIcon(MarkerColor.RED), makeIcon(MarkerColor.VIOLET)];
 
 //initialization of map for webpage
 function init(){
@@ -54,16 +48,6 @@ function init(){
 
     mapInit();
 
-    let selectedPosition;
-    map.on('click', function(ev){
-        //console.log(ev);
-        let latlng = map.mouseEventToLatLng(ev.originalEvent);
-        if (selectedPosition != undefined){
-            map.removeLayer(selectedPosition);
-        }
-        selectedPosition = L.marker([latlng.lat, latlng.lng]).addTo(map);
-    });
-
 }  
 
 function resolveParameters(pageParam){
@@ -71,10 +55,12 @@ function resolveParameters(pageParam){
     if(url.has("user")){
         user.style.visibility = "visible";
         guest.style.visibility = "hidden";
+        userLogged = true;
 
     }else{
         user.style.visibility = "hidden";
         guest.style.visibility = "visible";
+        userLogged = false;
 
     }
     console.log(url.has("user"));
@@ -88,7 +74,7 @@ function mapInit(){
     map.locate({watch: true, setView: true, maxZoom: 11, timeout:2000, enableHighAccuracy: true});
     map.on('locationfound', function(ev){
     if(userLocation != undefined) map.removeLayer(userLocation);
-    userLocation = L.marker(ev.latlng, {icon: myCustomIcon}).addTo(map);
+    userLocation = L.marker(ev.latlng, {icon: makeIcon(MarkerColor.BLUE)}).bindPopup("You").addTo(map);
     console.log("refresh");
 
     });
@@ -98,6 +84,7 @@ function mapInit(){
 
     });
     
+    //MUST set daccess token to get map
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: 18,
@@ -109,6 +96,57 @@ function mapInit(){
 
     //add locations sent from server
     addLocations();
+
+    //set listener for selected position
+    let selectedPosition;
+    map.on('click', function(ev){
+        if (!userLogged) return;
+        let latlng = map.mouseEventToLatLng(ev.originalEvent);
+        let form = createForm();
+        if (selectedPosition != undefined){
+            map.removeLayer(selectedPosition);
+            form.classList.remove("show");
+        }
+        
+        form.classList.add("show");
+        form.children[1].name = latlng.lat.toFixed(4) + " " + latlng.lng.toFixed(4);
+        selectedPosition = L.marker([latlng.lat, latlng.lng], {icon: makeIcon(MarkerColor.GOLD)}).addTo(map);
+        selectedPosition.bindPopup(form).openPopup();
+    });
+}
+
+function createForm(){
+    let form = document.createElement("div");
+    form.classList.add("reportForm");
+    //form.style.display = "none";
+    form.id = "reportForm";
+
+    let elem = document.createElement("textarea");
+    elem.classList.add("inFormElem");
+    elem.cols = 20;
+    elem.rows = 3;
+    elem.id = "description";
+    form.appendChild(elem);
+
+    elem = document.createElement("input");
+    elem.type = "button";
+    elem.id = "submitReport";
+    elem.value = "Submit";
+    elem.classList.add("inFormElem");
+    elem.classList.add("repBtn");
+    elem.onclick = reportProblem;
+    form.appendChild(elem);
+
+    return form;
+}
+
+//create dialog to add description and send data to server
+function reportProblem(btn){
+    //TODO: create dialog and sent information from btn.id to server
+    let description = document.getElementById("description");
+    console.log(description.value); //get description from textarea
+    console.log(btn.target.name); //get coordinates from name
+    console.log("hello");
 }
 
 //prepares layers to get inserted into map
@@ -160,7 +198,7 @@ function ECO_Layers(){
     for (let i = 0; i < this.Layers.length; i++){
         for (let j = 0; j < location.length; j++){
             if (this.Layers[i].layerName == location[j][2]){
-                this.Layers[i].arrayOfMarkers.push(L.marker([location[j][0],location[j][1]]).bindPopup(location[j][3]));
+                this.Layers[i].arrayOfMarkers.push(L.marker([location[j][0],location[j][1]], {icon: layerIcon[i % layerIcon.length]}).bindPopup(location[j][3]));
             }
         }
     }
@@ -172,6 +210,17 @@ function ECO_Layers(){
     this.getLayerMarkers = function(index) { return this.Layers[index].arrayOfMarkers; }
 
     return this;
+}
+
+function makeIcon(color){ 
+    return new L.Icon({
+        iconUrl: color,
+        shadowUrl: MarkerShadow,
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
 }
 
 //if needed, can be used

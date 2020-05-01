@@ -40,7 +40,7 @@ body::-webkit-scrollbar-thumb{
 
 main{
     margin-left: var(--navbar-size);
-    padding: 0px;   
+    padding: 0px; 
 }
 
 /*--------------------------------------------------------*/
@@ -51,7 +51,7 @@ main{
     background-color: var(--bg-primary);
     transition: var(--transition-speed) ease;
     border-collapse: collapse;
-    z-index: 1100;
+    z-index: 1001;
 }
 
 .navbar-nav{
@@ -224,4 +224,37 @@ main{
 
 .customIcon:hover{
     border: 1px solid green;
+}
+
+/*--------------------------------------------------------*/
+/*random needed things*/
+
+.repBtn{
+    background-color: transparent;
+    padding: 0.5em;
+    outline: none;  
+    cursor: pointer;
+}
+
+.repBtn:hover {
+    background-color: var(--btnColor);
+    transition-timing-function: ease-in;
+    transition-duration: 0.5s;
+}
+
+.inFormElem{
+    --btnColor: #54b93f;
+    margin: 1px;
+    border: 1px solid var(--btnColor);
+    border-radius: 1em;
+    resize: none;
+}
+
+.show{
+    display: inline;
+}
+
+.reportForm{
+    display: flex;
+    justify-content: center;
 }
