@@ -4,8 +4,10 @@
  *      'TODO' -> tasks that need to be done
  *      'NOTE' -> note about idea for some parte of code
  */
-var guest = document.getElementById("guest"); //get navBar for guest
-var user = document.getElementById("user"); //get navBar for user
+var guest; //get navBar for guest
+var user;//get navBar for user
+
+var userLocation;
 
 var map;
 var allLayers = [];
@@ -18,28 +20,43 @@ const Tag = {
     MARKEDLOCATION: "Marked location"
 };
 
-const CustomIcons = {
-    GREEN_ICON: new L.Icon({
-        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
-    })
+const MarkerColor = {
+    BLACK:      "../Leaflet_Icon/marker-icon-black.png",
+    BLUE:       "../Leaflet_Icon/marker-icon-blue.png",
+    GOLD:       "../Leaflet_Icon/marker-icon-gold.png",
+    GREEN:      "../Leaflet_Icon/marker-icon-green.png",
+    GRAY:       "../Leaflet_Icon/marker-icon-grey.png",
+    ORANGE:     "../Leaflet_Icon/marker-icon-orange.png",
+    RED:        "../Leaflet_Icon/marker-icon-red.png",
+    VIOLET:     "../Leaflet_Icon/marker-icon-violet.png",
+    YELLOW:     "../Leaflet_Icon/marker-icon-yellow.png"
 };
+const MarkerShadow = "../Leaflet_Icon/marker-shadow.png";
+
+var myCustomIcon = new L.Icon({
+    iconUrl: MarkerColor.GOLD,
+    shadowUrl: MarkerShadow,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+
 
 //initialization of map for webpage
 function init(){
 
+    guest = document.getElementById("guest");
+    user = document.getElementById("user");
+
     //TODO: make apropriate page parametar function/handler
-    resolveParameters(location.search.substring(1));
+    resolveParameters(window.location.search);
 
     mapInit();
 
     let selectedPosition;
     map.on('click', function(ev){
-        console.log(ev);
+        //console.log(ev);
         let latlng = map.mouseEventToLatLng(ev.originalEvent);
         if (selectedPosition != undefined){
             map.removeLayer(selectedPosition);
@@ -49,29 +66,37 @@ function init(){
 
 }  
 
-function resolveParameters(param){
-    let array = param.split("#");
-
-    for (let i = 0; i < array.length; i++){
-        array[i] = array[i].split("=");
-    }
-
-    if (array[0][0] == "guest" || param == ""){
-        //guest ui
-        guest.style.visibility = "visible";
-        user.style.visibility = "hidden";
-        listenerActive = false;
-
-    }else if (array[0][0] == "user"){
-        //user ui
-        guest.style.visibility = "hidden";
+function resolveParameters(pageParam){
+    let url = new URLSearchParams(pageParam);
+    if(url.has("user")){
         user.style.visibility = "visible";
-        listenerActive = true;
+        guest.style.visibility = "hidden";
+
+    }else{
+        user.style.visibility = "hidden";
+        guest.style.visibility = "visible";
+
     }
+    console.log(url.has("user"));
 }
 
 function mapInit(){
+    //create map instance
     map = L.map("map");
+    
+    //add tracking of user on map
+    map.locate({watch: true, setView: true, maxZoom: 11, timeout:2000, enableHighAccuracy: true});
+    map.on('locationfound', function(ev){
+    if(userLocation != undefined) map.removeLayer(userLocation);
+    userLocation = L.marker(ev.latlng, {icon: myCustomIcon}).addTo(map);
+    console.log("refresh");
+
+    });
+    map.on('locationerror', function(ev){
+        console.log("can't get geolocation");
+        console.log(ev.massage);
+
+    });
     
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -81,26 +106,28 @@ function mapInit(){
         zoomOffset: -1,
         accessToken: "pk.eyJ1IjoibWwxNzA3MjIiLCJhIjoiY2s5YTVuMGZqMDRkajNmbnZ0M3dpZmw5aCJ9.-DN1GUj4G7MaDepRdj8V1g"
     }).addTo(map);
-    setCurrentPosition();
 
+    //add locations sent from server
     addLocations();
 }
 
+//prepares layers to get inserted into map
 function addLocations(){
 
-    let groups = makeLayerArray();
+    let groups = new ECO_Layers();
 
-    for(let i = 0; i < groups.length; i++){
-        allLayers.push({
-            layerName: groups[i].layerName,
-            layerGroup: L.layerGroup(groups[i].arrayOfMarkers)
+    for(let i = 0; i < groups.getLength(); i++){
+        allLayers.push({                                        //allLayers is global variable
+            layerName: groups.getLayerName(i),
+            layerGroup: L.layerGroup(groups.getLayerMarkers(i))
         });
     }
 }
 
-function makeLayerArray(){
+//sorts locations into layers and returns array of layers
+function ECO_Layers(){
+
     let location = [
-        
         [44.871163, 20.638895, 'Main office', 'Main office Pancevo'],
         [44.882502, 20.456271, 'Plant', 'Plant 8'],
         [44.827720, 20.388044, 'Plant', 'Plant 5'],
@@ -119,26 +146,32 @@ function makeLayerArray(){
     ];
     if (location == undefined) return location;
 
-    let differentGroups = [];
+    this.Layers = [];
     for (let i = 0; i < location.length; i++){
-        if (!differentGroups.includes(location[i][2]))
-            differentGroups.push(location[i][2]);
+        if (!this.Layers.includes(location[i][2]))
+        this.Layers.push(location[i][2]);
     }
-    for (let i = 0; i < differentGroups.length; i++){
-        differentGroups[differentGroups.indexOf(differentGroups[i])] = {
-            layerName: differentGroups[i],
+    for (let i = 0; i < this.Layers.length; i++){
+        this.Layers[this.Layers.indexOf(this.Layers[i])] = {
+            layerName: this.Layers[i],
             arrayOfMarkers: []
         };
     }
-    for (let i = 0; i < differentGroups.length; i++){
+    for (let i = 0; i < this.Layers.length; i++){
         for (let j = 0; j < location.length; j++){
-            if (differentGroups[i].layerName == location[j][2]){
-                differentGroups[i].arrayOfMarkers.push(L.marker([location[j][0],location[j][1]]).bindPopup(location[j][3]));
+            if (this.Layers[i].layerName == location[j][2]){
+                this.Layers[i].arrayOfMarkers.push(L.marker([location[j][0],location[j][1]]).bindPopup(location[j][3]));
             }
         }
     }
 
-    return differentGroups;
+    this.getLength = function(){ return this.Layers.length; }
+
+    this.getLayerName = function(index) {return this.Layers[index].layerName; }
+
+    this.getLayerMarkers = function(index) { return this.Layers[index].arrayOfMarkers; }
+
+    return this;
 }
 
 //if needed, can be used
@@ -160,6 +193,7 @@ function findLocation(){
     dontWork();
 }
 
+//next 4 functions add/remove corresponding layers to map 
 var toggleOffice = false;
 function on_offOfince(){
     toggleOffice = !toggleOffice;
@@ -246,19 +280,4 @@ function on_offMarkedLocations(){
 
 function dontWork(){
     alert("Sorry, not implemented yet");
-}
-
-//at this moment doesn't need changing
-function setCurrentPosition(content){
-
-    navigator.geolocation.getCurrentPosition(function success(pos){
-       map.setView([pos.coords.latitude, pos.coords.longitude], 11);
-       let m = L.marker([pos.coords.latitude, pos.coords.longitude]).bindPopup("Me").addTo(map);
-    },function error(err){
-        throw Error("Error with finding current position");
-    },{
-        enableHighAccuracy: true,
-        timeout: 1000,
-        maximumAge: 0
-    });
 }

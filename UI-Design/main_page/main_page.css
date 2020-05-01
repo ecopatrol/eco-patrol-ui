@@ -16,6 +16,7 @@
     --transition-speed: 200ms;
     --screen-size: 600px;
     --logo-margin-left: 12rem;
+
 }
 
 body{
@@ -202,4 +203,25 @@ main{
         display: inline;
         transition: opacity var(--transition-speed);
     }
+}
+
+/*--------------------------------------------------------*/
+/*icon class*/
+
+.customIcon{
+    --iconSize: 20px;
+    width: var(--iconSize) !important;
+    height: var(--iconSize) !important;
+    border-radius: 3rem 3rem 0;
+    border: 1px solid white;
+
+}
+
+.myLocation{
+    background-color: red;
+    
+}
+
+.customIcon:hover{
+    border: 1px solid green;
 }
