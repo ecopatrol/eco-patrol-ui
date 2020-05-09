@@ -116,12 +116,20 @@ function mapInit(){
 }
 
 function createForm(){
+    let elem;
     let form = document.createElement("div");
     form.classList.add("reportForm");
     //form.style.display = "none";
     form.id = "reportForm";
 
-    let elem = document.createElement("textarea");
+    elem = document.createElement("h3");
+    elem.textContent = "Report";
+    form.appendChild(elem);
+
+    elem = document.createElement("section");
+    form.appendChild(elem);
+
+    elem = document.createElement("textarea");
     elem.classList.add("inFormElem");
     elem.cols = 20;
     elem.rows = 3;
