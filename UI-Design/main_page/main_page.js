@@ -109,7 +109,7 @@ function mapInit(){
         }
         
         form.classList.add("show");
-        form.children[1].name = latlng.lat.toFixed(4) + " " + latlng.lng.toFixed(4);
+        form.children[2].name = latlng.lat.toFixed(4) + " " + latlng.lng.toFixed(4);
         selectedPosition = L.marker([latlng.lat, latlng.lng], {icon: makeIcon(MarkerColor.GOLD)}).addTo(map);
         selectedPosition.bindPopup(form).openPopup();
     });
@@ -126,14 +126,28 @@ function createForm(){
     elem.textContent = "Report";
     form.appendChild(elem);
 
-    elem = document.createElement("section");
+    elem = document.createElement("select");
+    elem.classList.add("inFormElem");
+    elem.id = "selectType";
+    //
+    let tmp = document.createElement("option");
+    tmp.text = "wild dump";
+    elem.add(tmp);
+    tmp = document.createElement("option");
+    tmp.text = "burning container";
+    elem.add(tmp);
+    tmp = document.createElement("option");
+    tmp.text = "overflowing container";
+    elem.add(tmp);
+    //
     form.appendChild(elem);
 
     elem = document.createElement("textarea");
     elem.classList.add("inFormElem");
+    elem.placeholder = "Description";
     elem.cols = 20;
     elem.rows = 3;
-    elem.id = "description";
+    elem.id = "desc";
     form.appendChild(elem);
 
     elem = document.createElement("input");
@@ -149,12 +163,46 @@ function createForm(){
 }
 
 //create dialog to add description and send data to server
-function reportProblem(btn){
+function reportProblem(ev){
     //TODO: create dialog and sent information from btn.id to server
-    let description = document.getElementById("description");
-    console.log(description.value); //get description from textarea
-    console.log(btn.target.name); //get coordinates from name
-    console.log("hello");
+    let description = document.getElementById("desc");
+    let repType = document.getElementById("selectType");
+    //console.log(repType.value);
+    //console.log(description.value); //get description from textarea
+    //console.log(description.name); //get coordinates from name
+    let obj = {
+        type: repType.value,
+        coords: description.name,
+        desc: description.value
+    };
+    console.log(obj);
+    sendReportData(obj).then(() => {
+        alert('uspesno');
+    }).catch((error) => { 
+        alert('neuspesno');console.log(error); 
+    });
+}
+
+function sendReportData(data){
+    return new Promise((resolve, reject) => {
+        $.ajax({
+        url: '',//send to ???
+        type: 'POST',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        crossDomain: true,
+        sucess: function () {
+            resolve();
+            alert('uspesno');
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            //<ovde mozes da uzmes status requesta ako je neuspesan, da vidis zasto je neuspesan, to se nalazu u xhr.status>
+            console.log("xhr.status = " + xhr.status);
+            reject();
+        }
+        });
+    });
 }
 
 //prepares layers to get inserted into map
