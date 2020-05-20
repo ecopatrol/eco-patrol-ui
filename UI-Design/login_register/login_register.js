@@ -32,26 +32,31 @@ function registration(){
         email: document.regForm.email.value,
         password: document.regForm.pass.value
     };
-    obj = JSON.stringify(obj);
+    //obj = JSON.stringify(obj);
     console.log(obj);
-    let promise = sendRegData(obj);
+    sendRegData(obj).then(() => {
+        alert('uspesno');
+    }).catch((error) => {alert('neuspesno');console.log(error);})
 }
 
+//moved to endpoints.js but dont know hot to link 2 js files togeder
 function sendRegData(data) {
     return new Promise((resolve, reject) => {
         $.ajax({
-        url: 'https://localhost:3000/register',
+        url: 'http://localhost:3000/register',//auth
         type: 'POST',
         dataType: 'json',
         contentType: 'application/json',
-        data: data,
+        data: JSON.stringify(data),
         crossDomain: true,
         sucess: function () {
             resolve();
+            alert('uspesno')
         },
         error: function(xhr, ajaxOptions, thrownError) {
             //<ovde mozes da uzmes status requesta ako je neuspesan, da vidis zasto je neuspesan, to se nalazu u xhr.status>
             console.log("xhr.status = " + xhr.status);
+            reject();
         }
         });
     });
