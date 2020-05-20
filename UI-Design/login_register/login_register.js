@@ -30,7 +30,13 @@ function registration(){
     }
     
     //ERROR: return status = 0!!! need help
-    let obj = {
+    
+     $("#tosModal").modal();
+    
+}
+
+function sendRegistrationRequest(){
+     let obj = {
         username: document.regForm.user.value,
         email: document.regForm.email.value,
         password: document.regForm.pass.value
@@ -40,8 +46,9 @@ function registration(){
     sendRegData(obj).then(() => {
         alert('uspesno');
     }).catch((error) => {alert('neuspesno');console.log(error);})
+    
+    
 }
-
 //moved to endpoints.js but dont know hot to link 2 js files togeder
 function sendRegData(data) {
     return new Promise((resolve, reject) => {
