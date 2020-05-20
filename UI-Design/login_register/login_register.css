@@ -19,15 +19,10 @@ body,html{
    
 }
 
-#reg_info{
-
-    font-weight: bold;
-    font-style: italic;
-}
 
 .box{
     position: absolute;
-    width: 400px;
+    width: 300px;
     padding: 40px;
     background: var(--formColor);
     text-align: center;
