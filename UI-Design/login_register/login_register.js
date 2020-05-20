@@ -1,6 +1,4 @@
 function login(){
-
-
     if (document.loginForm.username.value == "" || document.loginForm.password.value == ""){
         alert("Username or password not filled!");
         return;
@@ -9,19 +7,14 @@ function login(){
     //waiting for backend to suport for login
 
 
-    //if user exists and password is corect, open user main_page
 
-    if(document.loginForm.username.value=="operator" && document.loginForm.password.value=="operator"){
-         window.location.href="../main_page/main_page.html?operator";
-    } 
-    else{
+
+    //if user exists and password is corect, open user main_page
     window.location.href = "../main_page/main_page.html?user";
-    }
 }
 
 
-
-function RegistrationControl(){
+function registration(){
     if (document.regForm.user.value == "" || document.regForm.email.value == "" ||
     document.regForm.pass.value == "" || document.regForm.rPass.value == ""){
         alert("One or more fields are not filled!");
@@ -33,10 +26,6 @@ function RegistrationControl(){
         return;
     }
     
-    $("#tosModal").modal();
-}
-
-function sendRegistrationRequest(){
     //ERROR: return status = 0!!! need help
     let obj = {
         username: document.regForm.user.value,
@@ -49,8 +38,6 @@ function sendRegistrationRequest(){
         alert('uspesno');
     }).catch((error) => {alert('neuspesno');console.log(error);})
 }
-
-
 
 //moved to endpoints.js but dont know hot to link 2 js files togeder
 function sendRegData(data) {
