@@ -1,0 +1,42 @@
+<!-- LOGIN page -->
+<html lang="en" dir="ltr">
+    <head>
+      
+        <meta charset="utf-8">
+        <title>ECO Patrol - Login</title>
+        <link rel="stylesheet" href="./login_register.css">
+        <script src="./endpoints.js"></script>
+        <script src="./login_register.js"></script>
+        
+
+        <link rel="icon" href="slike/logo.jpg">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+    </head>
+
+    <body >
+
+        <div class="bg">
+
+        <form class="box" name="loginForm" style="border: 2px solid white;" autocomplete="off">
+
+            <img  src="./slike/user.png"  style="width: 250px;">
+
+            <h1><b>PATROLER</b></h1>
+             
+            <span class="text "><i>Please Enter Your Credentials</i></span>
+
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="button" onclick="login()"><b>LOG IN</b></button>
+            <br>
+            <span class="text">Problem with Log-In?<br>Contact your  </span><a href="#" class="text">Administrator</a>
+            <br>
+            <br>
+         
+
+        </form>
+
+      </div>
+    </body>
+</html>
