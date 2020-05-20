@@ -1,8 +1,9 @@
+//FINAL VERZION - guest and user (Matovic)
 /**
  * This document is work in progress
  * Subjected to change in future
  *      'TODO' -> tasks that need to be done
- *      'NOTE' -> note about idea for some parte of code
+ *      'NOTE' -> note about idea for some part of code
  */
 var guest; //get navBar for guest
 var user;//get navBar for user
