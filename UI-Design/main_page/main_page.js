@@ -62,9 +62,8 @@ function resolveParameters(pageParam){
         user.style.visibility = "hidden";
         guest.style.visibility = "visible";
         userLogged = false;
-
     }
-    console.log(url.has("user"));
+    //console.log(url.has("user"));
 }
 
 function mapInit(){
@@ -386,4 +385,8 @@ function on_offMarkedLocations(){
 
 function dontWork(){
     alert("Sorry, not implemented yet");
+}
+
+function initOper(){
+    mapInit();
 }

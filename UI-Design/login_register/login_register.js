@@ -10,7 +10,11 @@ function login(){
 
 
     //if user exists and password is corect, open user main_page
+    if (document.loginForm.username.value == "oper" || document.loginForm.password.value == "oper"){
+        window.location.href = "../main_page/operator.html";
+    }else{
     window.location.href = "../main_page/main_page.html?user";
+    }
 }
 
 
