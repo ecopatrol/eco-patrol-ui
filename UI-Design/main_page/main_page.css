@@ -147,6 +147,9 @@ main{
 #user{
     visibility: hidden;
 }
+#operator{
+    visibility: hidden;
+}
 
 #map{
     height: 100%;
