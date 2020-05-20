@@ -6,10 +6,7 @@ function login(){
 
     //waiting for backend to suport for login
 
-    if (document.regForm.pass.value != document.regForm.rPass.value){
-        alert("Passpord and Repeat password fields do not match!");
-        return;
-    }
+
 
 
     //if user exists and password is corect, open user main_page
