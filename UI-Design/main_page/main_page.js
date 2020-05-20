@@ -58,11 +58,18 @@ function resolveParameters(pageParam){
         guest.style.visibility = "hidden";
         userLogged = true;
 
-    }else{
+    }else if{
         user.style.visibility = "hidden";
         guest.style.visibility = "visible";
         userLogged = false;
 
+    }
+    else if(url.has("operator")){
+
+        operator.style.visibility="visible";
+        user.style.visibility="hidden";
+        guest.style.visibility="hidden";
+        userLogged=false;
     }
     console.log(url.has("user"));
 }
