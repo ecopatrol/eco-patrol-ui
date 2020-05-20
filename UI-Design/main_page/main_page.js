@@ -1,9 +1,8 @@
-//FINAL VERZION - guest and user (Matovic)
 /**
  * This document is work in progress
  * Subjected to change in future
  *      'TODO' -> tasks that need to be done
- *      'NOTE' -> note about idea for some part of code
+ *      'NOTE' -> note about idea for some parte of code
  */
 var guest; //get navBar for guest
 var user;//get navBar for user
@@ -58,11 +57,18 @@ function resolveParameters(pageParam){
         guest.style.visibility = "hidden";
         userLogged = true;
 
-    }else{
+    }else if (url.has("user")){
         user.style.visibility = "hidden";
         guest.style.visibility = "visible";
         userLogged = false;
 
+    }
+    else if(url.has("operator")){
+
+        operator.style.visibility="visible";
+        user.style.visibility="hidden";
+        guest.style.visibility="hidden";
+        userLogged=false;
     }
     console.log(url.has("user"));
 }
@@ -110,12 +116,13 @@ function mapInit(){
         }
         
         form.classList.add("show");
-        form.children[2].name = latlng.lat.toFixed(4) + " " + latlng.lng.toFixed(4);
+        form.children[1].name = latlng.lat.toFixed(4) + " " + latlng.lng.toFixed(4);
         selectedPosition = L.marker([latlng.lat, latlng.lng], {icon: makeIcon(MarkerColor.GOLD)}).addTo(map);
         selectedPosition.bindPopup(form).openPopup();
     });
 }
 
+//Za klik na marker
 function createForm(){
     let elem;
     let form = document.createElement("div");
@@ -123,8 +130,13 @@ function createForm(){
     //form.style.display = "none";
     form.id = "reportForm";
 
+
+
     elem = document.createElement("h3");
     elem.textContent = "Report";
+    form.appendChild(elem);
+
+    elem=document.createElement("br");
     form.appendChild(elem);
 
     elem = document.createElement("select");
@@ -164,7 +176,7 @@ function createForm(){
 }
 
 //create dialog to add description and send data to server
-function reportProblem(ev){
+function reportProblem(btn){
     //TODO: create dialog and sent information from btn.id to server
     let description = document.getElementById("desc");
     let repType = document.getElementById("selectType");
@@ -182,8 +194,8 @@ function reportProblem(ev){
     }).catch((error) => { 
         alert('neuspesno');console.log(error); 
     });
+   
 }
-
 function sendReportData(data){
     return new Promise((resolve, reject) => {
         $.ajax({
@@ -206,10 +218,12 @@ function sendReportData(data){
     });
 }
 
+
 //prepares layers to get inserted into map
 function addLocations(){
 
     let groups = new ECO_Layers();
+   
 
     for(let i = 0; i < groups.getLength(); i++){
         allLayers.push({                                        //allLayers is global variable
@@ -270,6 +284,7 @@ function ECO_Layers(){
 }
 
 function makeIcon(color){ 
+    
     return new L.Icon({
         iconUrl: color,
         shadowUrl: MarkerShadow,

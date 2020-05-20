@@ -19,7 +19,23 @@ body,html{
    
 }
 
+#reg_info{
 
+    font-weight: bold;
+    font-style: italic;
+}
+.box1{
+   
+    position: absolute;
+    width: 350px;
+    padding: 40px;
+    background: var(--formColor);
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    color:black;
+}
 .box{
     position: absolute;
     width: 300px;
