@@ -56,11 +56,13 @@ function resolveParameters(pageParam){
     if(url.has("user")){
         user.style.visibility = "visible";
         guest.style.visibility = "hidden";
+        operator.style.visibility="vhidden";
         userLogged = true;
 
-    }else if{
+    }else if (url.has("guest"){
         user.style.visibility = "hidden";
         guest.style.visibility = "visible";
+         operator.style.visibility="hidden";
         userLogged = false;
 
     }
@@ -71,7 +73,7 @@ function resolveParameters(pageParam){
         guest.style.visibility="hidden";
         userLogged=false;
     }
-    console.log(url.has("user"));
+   
 }
 
 function mapInit(){
