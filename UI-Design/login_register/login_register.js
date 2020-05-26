@@ -36,13 +36,6 @@ function RegistrationControl(){
     $("#tosModal").modal();
 }
 
-function openModal(){
-
-    
-
-
-}
-
 function sendRegistrationRequest(){
     //ERROR: return status = 0!!! need help
     let obj = {
