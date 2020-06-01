@@ -19,11 +19,13 @@ body,html{
    
 }
 
+
 #reg_info{
 
     font-weight: bold;
     font-style: italic;
 }
+
 .box1{
    
     position: absolute;
@@ -38,7 +40,7 @@ body,html{
 }
 .box{
     position: absolute;
-    width: 280px;
+    width: 350px;
     padding: 40px;
     background: var(--formColor);
     text-align: center;
@@ -53,6 +55,8 @@ body,html{
     text-transform: uppercase;
     font-weight: 500;
 }
+
+
 
 .box input[type = "text"], .box input[type = "password"]{
     border: 0;
@@ -70,6 +74,7 @@ body,html{
 }
 
 .box input[type = "text"]:focus, .box input[type = "password"]:focus{
+
     width: 280px;
     border-color: var(--borderColor);
 }

@@ -13,12 +13,17 @@ var userLogged;
 var map;
 var allLayers = [];
 
+var selectedPosition;
+
 //JavaScript Enum
 const Tag = {
     OFFICE: "Main office",
     PLANT: "Plant",
     LANDFILL: "Landfill",
-    MARKEDLOCATION: "Marked location"
+    MARKEDLOCATION: "Marked location",
+    WILD_DUMP: "wild dump",	
+    BURNING_CONTAINER: "burning container",	
+    OVERFLOWING_CONTAINER: "overflowing container"
 };
 
 //paths to icons (from this js file)
@@ -35,7 +40,21 @@ const MarkerColor = {
 };
 const MarkerShadow = "../Leaflet_Icon/marker-shadow.png";
 
-const layerIcon = [makeIcon(MarkerColor.GREEN), makeIcon(MarkerColor.GRAY), makeIcon(MarkerColor.ORANGE), makeIcon(MarkerColor.RED), makeIcon(MarkerColor.VIOLET)];
+const layerIcon = [
+
+    makeIcon(MarkerColor.GREEN),
+	
+    makeIcon(MarkerColor.GRAY),
+	
+    makeIcon(MarkerColor.ORANGE),
+    	
+    makeIcon(MarkerColor.RED),
+    	
+    makeIcon(MarkerColor.VIOLET),
+	
+    makeIcon(MarkerColor.YELLOW)
+    	
+    ];
 
 //initialization of map for webpage
 function init(){
@@ -102,25 +121,37 @@ function mapInit(){
     }).addTo(map);
 
     //add locations sent from server
-    addLocations();
+    let url = new URLSearchParams(window.location.search);
+	
+    if (url.has("operator")) {
+        let button = document.createElement("button");
+        button.innerHTML = "Remove";
+        button.setAttribute("onclick", "removeReport(this)");
+        addLocations(button);
+    } else {
+         addLocations();	
+    }
+  
 
     //set listener for selected position
-    let selectedPosition;
-    map.on('click', function(ev){
+    
+    map.on('click', function (ev) {
         if (!userLogged) return;
         let latlng = map.mouseEventToLatLng(ev.originalEvent);
         let form = createForm();
-        if (selectedPosition != undefined){
+        if (selectedPosition != undefined) {
             map.removeLayer(selectedPosition);
             form.classList.remove("show");
         }
-        
+
         form.classList.add("show");
-        form.children[1].name = latlng.lat.toFixed(4) + " " + latlng.lng.toFixed(4);
-        selectedPosition = L.marker([latlng.lat, latlng.lng], {icon: makeIcon(MarkerColor.GOLD)}).addTo(map);
+        selectedPosition = L.marker([latlng.lat, latlng.lng], { icon: makeIcon(MarkerColor.GOLD) }).addTo(map);
         selectedPosition.bindPopup(form).openPopup();
+        document.getElementById("desc").name = latlng.lat.toFixed(6) + " " + latlng.lng.toFixed(6);
+
     });
 }
+
 
 //Za klik na marker
 function createForm(){
@@ -130,6 +161,7 @@ function createForm(){
     //form.style.display = "none";
     form.id = "reportForm";
 
+    
 
 
     elem = document.createElement("h3");
@@ -176,111 +208,152 @@ function createForm(){
 }
 
 //create dialog to add description and send data to server
-function reportProblem(btn){
+function reportProblem(btn) {
     //TODO: create dialog and sent information from btn.id to server
     let description = document.getElementById("desc");
+    console.log(description.name);
     let repType = document.getElementById("selectType");
-    //console.log(repType.value);
-    //console.log(description.value); //get description from textarea
-    //console.log(description.name); //get coordinates from name
+
+    let coords = description.name.split(" ");
+    console.log(coords[0]);
+
+
+    //TODO: traba da se popravi, server nesto zajebava
     let obj = {
-        type: repType.value,
-        coords: description.name,
-        desc: description.value
+        username: window.location.search.substring(1).split("&")[0].split("=")[1],
+        longitude: coords[1],
+        latitude: coords[0],
+        category: repType.value,
+        description: description.value
     };
+    selectedPosition.closePopup();
+    document.getElementById("reportForm").remove();
     console.log(obj);
     sendReportData(obj).then(() => {
         alert('uspesno');
-    }).catch((error) => { 
-        alert('neuspesno');console.log(error); 
+    }).catch((error) => {
+        alert('neuspesno'); console.log(error);
     });
-   
+
 }
-function sendReportData(data){
+function sendReportData(data) {
     return new Promise((resolve, reject) => {
         $.ajax({
-        url: '',//send to ???
-        type: 'POST',
-        dataType: 'json',
-        contentType: 'application/json',
-        data: JSON.stringify(data),
-        crossDomain: true,
-        sucess: function () {
-            resolve();
-            alert('uspesno');
-        },
-        error: function(xhr, ajaxOptions, thrownError) {
-            //<ovde mozes da uzmes status requesta ako je neuspesan, da vidis zasto je neuspesan, to se nalazu u xhr.status>
-            console.log("xhr.status = " + xhr.status);
-            reject();
-        }
+            url: 'http://localhost:3000/report',
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            crossDomain: true,
+            sucess: function () {
+                resolve();
+                alert('uspesno');
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                //<ovde mozes da uzmes status requesta ako je neuspesan, da vidis zasto je neuspesan, to se nalazu u xhr.status>
+                console.log("xhr.status = " + xhr.status);
+                reject();
+            }
         });
     });
 }
 
 
 //prepares layers to get inserted into map
-function addLocations(){
+function addLocations(forPopups) {
+    let groups;
 
-    let groups = new ECO_Layers();
-   
+    fetchData(function (data) {
+        groups = new EcoPatrolLayers(data, forPopups);
 
-    for(let i = 0; i < groups.getLength(); i++){
-        allLayers.push({                                        //allLayers is global variable
-            layerName: groups.getLayerName(i),
-            layerGroup: L.layerGroup(groups.getLayerMarkers(i))
+        let bool = false;
+        if (allLayers.length != 0) {
+            allLayers = [];
+            bool = true;
+
+        }
+
+        for (let i = 0; i < groups.layers.length; i++) {
+            allLayers.push({                                        //allLayers is global variable
+                layerName: groups.layers[i].layerName,
+                layerGroup: L.layerGroup(groups.layers[i].arrayOfMarkers)
+            });
+        }
+        if (bool){
+            on_offMarkedLocations();
+        }
+
+    });
+}
+
+function fetchData(onDone) {
+    let serverData = [];
+    $.getJSON('http://localhost:3000/reports', function (data) {
+        $.each(data, function (index) {
+            let point = [];
+            point.push(data[index].latitude);
+            point.push(data[index].longitude);
+            point.push(data[index].category);
+            point.push(data[index].description);
+            serverData.push(point);
         });
-    }
+        //console.log("+++++++");
+        onDone(serverData);
+    });
 }
 
 //sorts locations into layers and returns array of layers
-function ECO_Layers(){
+class EcoPatrolLayers {
 
-    let location = [
-        [44.871163, 20.638895, 'Main office', 'Main office Pancevo'],
-        [44.882502, 20.456271, 'Plant', 'Plant 8'],
-        [44.827720, 20.388044, 'Plant', 'Plant 5'],
-        [44.811615, 20.488727, 'Main office', 'Main office Belgrad'],
-        [44.778830, 20.497828, 'Plant', 'Plant 1'],
-        [44.886812, 20.627040, 'Landfill', 'Landfill 1'],
-        [44.791046, 20.472462, 'Plant', 'Plant 2'],        
-        [44.848452, 20.375347, 'Plant', 'Plant 4'],        
-        [44.817660, 20.488679, 'Plant', 'Plant 6'],
-        [44.864166, 20.651177, 'Main office', 'Main office Pancevo'],
-        [44.747485, 20.447991, 'Plant', 'Plant 7'],        
-        [44.828683, 20.458060, 'Plant', 'Plant 9'],        
-        [44.796462, 20.505937, 'Plant', 'Plant 3'],
-        [44.766906, 20.409335, 'Plant', 'Plant 10'],
-        [44.887581, 20.782556, 'Landfill', 'Landfill 2']
-    ];
-    if (location == undefined) return location;
+    constructor(locations, data) {
+        this.locations = locations;
+        this.Layers = this.getDifferentLayers(locations);
+        this.addPopups(data);
+    }
 
-    this.Layers = [];
-    for (let i = 0; i < location.length; i++){
-        if (!this.Layers.includes(location[i][2]))
-        this.Layers.push(location[i][2]);
+    getDifferentLayers(array) {
+        let Layers = [];
+        for (let i = 0; i < array.length; i++) {
+            if (!Layers.includes(array[i][2]))
+                Layers.push(array[i][2]);
+        }
+        for (let i = 0; i < Layers.length; i++) {
+            Layers[Layers.indexOf(Layers[i])] = {
+                layerName: Layers[i],
+                arrayOfMarkers: []
+            };
+        }
+        return Layers;
     }
-    for (let i = 0; i < this.Layers.length; i++){
-        this.Layers[this.Layers.indexOf(this.Layers[i])] = {
-            layerName: this.Layers[i],
-            arrayOfMarkers: []
-        };
-    }
-    for (let i = 0; i < this.Layers.length; i++){
-        for (let j = 0; j < location.length; j++){
-            if (this.Layers[i].layerName == location[j][2]){
-                this.Layers[i].arrayOfMarkers.push(L.marker([location[j][0],location[j][1]], {icon: layerIcon[i % layerIcon.length]}).bindPopup(location[j][3]));
+
+    addPopups(data) {
+        for (let i = 0; i < this.Layers.length; i++) {
+            for (let j = 0; j < this.locations.length; j++) {
+                if (this.Layers[i].layerName == this.locations[j][2]) {
+                    let div = document.createElement("div");
+                    let p = document.createElement("p");
+                    p.innerHTML = this.locations[j][3];
+                    div.appendChild(p);
+                    if (data != undefined) {
+                        let clone = data.cloneNode(true);
+                        div.appendChild(clone);
+                    }
+                    let name;
+                    let marker = L.marker(name = [this.locations[j][0], this.locations[j][1]], { icon: layerIcon[i % layerIcon.length] });
+                    div.setAttribute("name", name[1] + " " + name[0] + " " + this.locations[j][2]);
+                    this.Layers[i].arrayOfMarkers.push(marker.bindPopup(div));
+
+
+                    //console.log(div.name);
+                }
             }
         }
     }
 
-    this.getLength = function(){ return this.Layers.length; }
+    get layers() {
+        return this.Layers;
+    }
 
-    this.getLayerName = function(index) {return this.Layers[index].layerName; }
-
-    this.getLayerMarkers = function(index) { return this.Layers[index].arrayOfMarkers; }
-
-    return this;
 }
 
 function makeIcon(color){ 
@@ -377,26 +450,79 @@ function on_offLandfills(){
         }
     }
 }
+function removeReport(btn) {
+    //console.log(btn.parentNode.getAttribute("name"));
+    let data = btn.parentNode.getAttribute("name").split(" ");
+
+    //console.log(data[0]);
+    //console.log(data[1]);
+    //console.log(data[2] + " " + data[3]);
+
+    let obj = {
+        longitude: data[0],
+        latitude: data[1],
+        category: data[2] + " " + data[3]
+    };
+
+    (new Promise((resolve, reject) => {
+        $.ajax({
+            url: 'http://localhost:3000/deleteReport',
+            type: 'DELETE',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(obj),
+            crossDomain: true,
+            success: function () {
+
+                let button = document.createElement("button");
+                button.innerHTML = "Remove";
+                button.setAttribute("onclick", "removeReport(this)");
+                //console.log(button);
+                addLocations(button);
+
+                on_offMarkedLocations();
+                //on_offMarkedLocations();
+                resolve();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log("xhr.status = " + xhr.status);
+                reject();
+            }
+        });
+    })).then(() => {
+        
+    }).catch((error) => {
+        alert('neuspesno'); console.log(error);
+    });
+
+}
 
 var toggleMarkedLocation = false;
-function on_offMarkedLocations(){
+function on_offMarkedLocations() {
     toggleMarkedLocation = !toggleMarkedLocation;
-    
-    if (toggleMarkedLocation){
-        for(let i = 0; i < allLayers.length; i++){
-            if (allLayers[i].layerName == Tag.MARKEDLOCATION){
+
+    if (toggleMarkedLocation) {
+
+        for (let i = 0; i < allLayers.length; i++) {
+            if (allLayers[i].layerName == Tag.MARKEDLOCATION || allLayers[i].layerName == Tag.WILD_DUMP ||
+                allLayers[i].layerName == Tag.BURNING_CONTAINER || allLayers[i].layerName == Tag.OVERFLOWING_CONTAINER) {
                 allLayers[i].layerGroup.addTo(map);
-                break;
             }
         }
-    }else{
-        for(let i = 0; i < allLayers.length; i++){
-            if (allLayers[i].layerName == Tag.MARKEDLOCATION){
+    } else {
+        for (let i = 0; i < allLayers.length; i++) {
+            if (allLayers[i].layerName == Tag.MARKEDLOCATION || allLayers[i].layerName == Tag.WILD_DUMP ||
+                allLayers[i].layerName == Tag.BURNING_CONTAINER || allLayers[i].layerName == Tag.OVERFLOWING_CONTAINER) {
                 map.removeLayer(allLayers[i].layerGroup);
-                break;
             }
         }
     }
+
+}
+
+function saveUser(){
+    localStorage.clear();
+    localStorage.setItem("user", window.location.search);
 }
 
 function dontWork(){
