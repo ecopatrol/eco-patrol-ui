@@ -18,7 +18,7 @@ function getUsers(){
     }
 
     usersRequest.onerror=function(){
-        console.log("Kurcina");
+        console.log("Error");
     }
 
     usersRequest.send();
@@ -39,7 +39,7 @@ function makeAsOperator(user){
 
         },
         error:function (params) {
-            console.log("Sranje");
+            console.log("Error");
         }
 
     })
@@ -58,7 +58,7 @@ function deleteMe(user){
             
         },
         error:function (){
-            console.log("Sranje");
+            console.log("Error");
         }   
     })
 
