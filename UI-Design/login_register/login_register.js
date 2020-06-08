@@ -65,6 +65,28 @@ function sendLoginData(data) {
     });
 }
 
+$(function(){
+    $('#n').keypress(function(e){
+        if (!((e.which >= 65 && e.which <= 90) || (e.which >= 97 && e.which <= 122))){
+            return false;
+        }
+    });
+});
+$(function(){
+    $('#sn').keypress(function(e){
+        if (!((e.which >= 65 && e.which <= 90) || (e.which >= 97 && e.which <= 122))){
+            return false;
+        }
+    });
+});
+$(function(){
+    $('#a').keypress(function(e){
+        if (!((e.which >= 48 && e.which <= 57) || (e.which >= 65 && e.which <= 90) || (e.which >= 97 && e.which <= 122))){
+            return false;
+        }
+    });
+});
+
 function RegistrationControl() {
 
     //in this function we are checking user info inputs!
@@ -101,6 +123,11 @@ function RegistrationControl() {
         return;
     }
 
+    if (document.regForm.phone.value.length < 9 || document.regForm.phone.value.length > 15){
+        alert("Phone number not valid");
+        return;
+    }
+
     sendRegistrationRequest()
 
 }
@@ -111,10 +138,15 @@ function sendRegistrationRequest() {
 
 
     let obj = {
+        name: document.regForm.name.value,
+        surname: document.regForm.surname.value,
+        address: document.regForm.address.value,
+        phone: document.regForm.phone.value,
         username: document.regForm.user.value,
         email: document.regForm.email.value,
         password: document.regForm.pass.value
     };
+    console.log(obj);
 
     sendRegData(obj).then(() => {
         alert("Welcome to the Eco Patrol");
