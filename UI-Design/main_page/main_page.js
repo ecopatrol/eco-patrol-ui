@@ -21,43 +21,43 @@ const Tag = {
     PLANT: "Plant",
     LANDFILL: "Landfill",
     MARKEDLOCATION: "Marked location",
-    WILD_DUMP: "wild dump",	
-    BURNING_CONTAINER: "burning container",	
+    WILD_DUMP: "wild dump",
+    BURNING_CONTAINER: "burning container",
     OVERFLOWING_CONTAINER: "overflowing container"
 };
 
 //paths to icons (from this js file)
 const MarkerColor = {
-    BLACK:      "../Leaflet_Icon/marker-icon-black.png",    //
-    BLUE:       "../Leaflet_Icon/marker-icon-blue.png",     //user location
-    GOLD:       "../Leaflet_Icon/marker-icon-gold.png",     //selected area
-    GREEN:      "../Leaflet_Icon/marker-icon-green.png",    //layer
-    GRAY:       "../Leaflet_Icon/marker-icon-grey.png",     //layer
-    ORANGE:     "../Leaflet_Icon/marker-icon-orange.png",   //layer
-    RED:        "../Leaflet_Icon/marker-icon-red.png",      //layer
-    VIOLET:     "../Leaflet_Icon/marker-icon-violet.png",   //layer
-    YELLOW:     "../Leaflet_Icon/marker-icon-yellow.png"    //
+    BLACK: "../Leaflet_Icon/marker-icon-black.png",    //
+    BLUE: "../Leaflet_Icon/marker-icon-blue.png",     //user location
+    GOLD: "../Leaflet_Icon/marker-icon-gold.png",     //selected area
+    GREEN: "../Leaflet_Icon/marker-icon-green.png",    //layer
+    GRAY: "../Leaflet_Icon/marker-icon-grey.png",     //layer
+    ORANGE: "../Leaflet_Icon/marker-icon-orange.png",   //layer
+    RED: "../Leaflet_Icon/marker-icon-red.png",      //layer
+    VIOLET: "../Leaflet_Icon/marker-icon-violet.png",   //layer
+    YELLOW: "../Leaflet_Icon/marker-icon-yellow.png"    //
 };
 const MarkerShadow = "../Leaflet_Icon/marker-shadow.png";
 
 const layerIcon = [
 
     makeIcon(MarkerColor.GREEN),
-	
+
     makeIcon(MarkerColor.GRAY),
-	
+
     makeIcon(MarkerColor.ORANGE),
-    	
+
     makeIcon(MarkerColor.RED),
-    	
+
     makeIcon(MarkerColor.VIOLET),
-	
+
     makeIcon(MarkerColor.YELLOW)
-    	
-    ];
+
+];
 
 //initialization of map for webpage
-function init(){
+function init() {
 
     guest = document.getElementById("guest");
     user = document.getElementById("user");
@@ -67,49 +67,49 @@ function init(){
 
     mapInit();
 
-}  
+}
 
-function resolveParameters(pageParam){
+function resolveParameters(pageParam) {
     let url = new URLSearchParams(pageParam);
-    if(url.has("user")){
+    if (url.has("user")) {
         user.style.visibility = "visible";
         guest.style.visibility = "hidden";
         userLogged = true;
 
-    }else if (url.has("user")){
+    } else if (url.has("user")) {
         user.style.visibility = "hidden";
         guest.style.visibility = "visible";
         userLogged = false;
 
     }
-    else if(url.has("operator")){
+    else if (url.has("operator")) {
 
-        operator.style.visibility="visible";
-        user.style.visibility="hidden";
-        guest.style.visibility="hidden";
-        userLogged=false;
+        operator.style.visibility = "visible";
+        user.style.visibility = "hidden";
+        guest.style.visibility = "hidden";
+        userLogged = false;
     }
     //console.log(url.has("user"));
 }
 
-function mapInit(){
+function mapInit() {
     //create map instance
     map = L.map("map");
-    
+
     //add tracking of user on map
-    map.locate({watch: true, setView: true, maxZoom: 11, timeout:2000, enableHighAccuracy: true});
-    map.on('locationfound', function(ev){
-    if(userLocation != undefined) map.removeLayer(userLocation);
-    userLocation = L.marker(ev.latlng, {icon: makeIcon(MarkerColor.BLUE)}).bindPopup("You").addTo(map);
-    //console.log("refresh");
+    map.locate({ watch: true, setView: true, maxZoom: 11, timeout: 2000, enableHighAccuracy: true });
+    map.on('locationfound', function (ev) {
+        if (userLocation != undefined) map.removeLayer(userLocation);
+        userLocation = L.marker(ev.latlng, { icon: makeIcon(MarkerColor.BLUE) }).bindPopup("You").addTo(map);
+        //console.log("refresh");
 
     });
-    map.on('locationerror', function(ev){
-        console.log("can't get geolocation");
-        console.log(ev.massage);
+    map.on('locationerror', function (ev) {
+        //console.log("can't get geolocation");
+        //console.log(ev.massage);
 
     });
-    
+
     //MUST set daccess token to get map
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -122,7 +122,7 @@ function mapInit(){
 
     //add locations sent from server
     //let url = new URLSearchParams(window.location.search);
-	
+
     /*if (url.has("operator")) {
         let button = document.createElement("button");
         button.innerHTML = "Remove";
@@ -131,10 +131,10 @@ function mapInit(){
     } else {
         addLocations();	
     }*/
-  
+
 
     //set listener for selected position
-    
+
     map.on('click', function (ev) {
         if (!userLogged) return;
         let latlng = map.mouseEventToLatLng(ev.originalEvent);
@@ -154,21 +154,21 @@ function mapInit(){
 
 
 //Za klik na marker
-function createForm(){
+function createForm() {
     let elem;
     let form = document.createElement("div");
     form.classList.add("reportForm");
     //form.style.display = "none";
     form.id = "reportForm";
 
-    
+
 
 
     elem = document.createElement("h3");
     elem.textContent = "Report";
     form.appendChild(elem);
 
-    elem=document.createElement("br");
+    elem = document.createElement("br");
     form.appendChild(elem);
 
     elem = document.createElement("select");
@@ -211,11 +211,11 @@ function createForm(){
 function reportProblem(btn) {
     //TODO: create dialog and sent information from btn.id to server
     let description = document.getElementById("desc");
-    console.log(description.name);
+    //console.log(description.name);
     let repType = document.getElementById("selectType");
 
     let coords = description.name.split(" ");
-    console.log(coords[0]);
+    //console.log(coords[0]);
 
 
     //TODO: traba da se popravi, server nesto zajebava
@@ -232,8 +232,8 @@ function reportProblem(btn) {
     sendReportData(obj).then(() => {
         //alert('uspesno');
     }).catch((error) => {
-        alert('neuspesno'); 
-        console.log(error);
+        //alert('neuspesno'); 
+        //console.log(error);
     });
 
 }
@@ -253,7 +253,10 @@ function sendReportData(data) {
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 //<ovde mozes da uzmes status requesta ako je neuspesan, da vidis zasto je neuspesan, to se nalazu u xhr.status>
-                console.log("xhr.status = " + xhr.status);
+                //console.log("xhr.status = " + xhr.status);
+
+                let err = (eval("(" + xhr.responseText + ")"));
+                alert("Error code: " + err.code + ", message: " + err.message);
                 reject();
             }
         });
@@ -288,16 +291,16 @@ function sendReportData(data) {
     });
 }*/
 
-function addLocations(fun, forPopup){
+function addLocations(fun, forPopup) {
     let groups;
 
-    fetchData(function(data){
+    fetchData(function (data) {
         //console.log("server data.lenght = " + data.length);
-        
+
         groups = new EcoPatrolLayers(data, forPopup);
 
-        if (allLayers.length > 0){
-            for(let i = 0; i < allLayers.length; i++){
+        if (allLayers.length > 0) {
+            for (let i = 0; i < allLayers.length; i++) {
                 map.removeLayer(allLayers[i].layerGroup);
                 allLayers.shift();
             }
@@ -309,7 +312,7 @@ function addLocations(fun, forPopup){
                 layerGroup: L.layerGroup(groups.layers[i].arrayOfMarkers)
             });
         }
-        
+
         fun("addLocations fin");
     });
 }
@@ -384,8 +387,8 @@ class EcoPatrolLayers {
 
 }
 
-function makeIcon(color){ 
-    
+function makeIcon(color) {
+
     return new L.Icon({
         iconUrl: color,
         shadowUrl: MarkerShadow,
@@ -397,92 +400,92 @@ function makeIcon(color){
 }
 
 //if needed, can be used
-function singOut(){
+function singOut() {
 
 }
 
-function singIn(){
+function singIn() {
 
 }
 
-function singUp(){
+function singUp() {
 
 }
 
 //need help with this things
 //TODO: implementation of functions
-function findLocation(){
+function findLocation() {
     dontWork();
 }
 
 //next 4 functions add/remove corresponding layers to map 
 var toggleOffice = false;
-function on_offOfince(){
-    updateLocations(function(data){
+function on_offOfince() {
+    updateLocations(function (data) {
         toggleOffice = !toggleOffice;
-    
-    if (toggleOffice){
-        for(let i = 0; i < allLayers.length; i++){
-            if (allLayers[i].layerName == Tag.OFFICE){
-                allLayers[i].layerGroup.addTo(map);
-                break;
+
+        if (toggleOffice) {
+            for (let i = 0; i < allLayers.length; i++) {
+                if (allLayers[i].layerName == Tag.OFFICE) {
+                    allLayers[i].layerGroup.addTo(map);
+                    break;
+                }
+            }
+        } else {
+            for (let i = 0; i < allLayers.length; i++) {
+                if (allLayers[i].layerName == Tag.OFFICE) {
+                    map.removeLayer(allLayers[i].layerGroup);
+                    break;
+                }
             }
         }
-    }else{
-        for(let i = 0; i < allLayers.length; i++){
-            if (allLayers[i].layerName == Tag.OFFICE){
-                map.removeLayer(allLayers[i].layerGroup);
-                break;
-            }
-        }
-    }
     });
 }
 
 var toggleOutposts = false;
-function on_offOutposts(){
-    updateLocations(function(data){
+function on_offOutposts() {
+    updateLocations(function (data) {
         toggleOutposts = !toggleOutposts;
-    
-    if (toggleOutposts){
-        for(let i = 0; i < allLayers.length; i++){
-            if (allLayers[i].layerName == Tag.PLANT){
-                allLayers[i].layerGroup.addTo(map);
-                break;
+
+        if (toggleOutposts) {
+            for (let i = 0; i < allLayers.length; i++) {
+                if (allLayers[i].layerName == Tag.PLANT) {
+                    allLayers[i].layerGroup.addTo(map);
+                    break;
+                }
+            }
+        } else {
+            for (let i = 0; i < allLayers.length; i++) {
+                if (allLayers[i].layerName == Tag.PLANT) {
+                    map.removeLayer(allLayers[i].layerGroup);
+                    break;
+                }
             }
         }
-    }else{
-        for(let i = 0; i < allLayers.length; i++){
-            if (allLayers[i].layerName == Tag.PLANT){
-                map.removeLayer(allLayers[i].layerGroup);
-                break;
-            }
-        }
-    }
     });
 }
 
 var toggleLandfills = false;
-function on_offLandfills(){
-    
-    updateLocations(function(data){
+function on_offLandfills() {
+
+    updateLocations(function (data) {
         toggleLandfills = !toggleLandfills;
-    
-    if (toggleLandfills){
-        for(let i = 0; i < allLayers.length; i++){
-            if (allLayers[i].layerName == Tag.LANDFILL){
-                allLayers[i].layerGroup.addTo(map);
-                break;
+
+        if (toggleLandfills) {
+            for (let i = 0; i < allLayers.length; i++) {
+                if (allLayers[i].layerName == Tag.LANDFILL) {
+                    allLayers[i].layerGroup.addTo(map);
+                    break;
+                }
+            }
+        } else {
+            for (let i = 0; i < allLayers.length; i++) {
+                if (allLayers[i].layerName == Tag.LANDFILL) {
+                    map.removeLayer(allLayers[i].layerGroup);
+                    break;
+                }
             }
         }
-    }else{
-        for(let i = 0; i < allLayers.length; i++){
-            if (allLayers[i].layerName == Tag.LANDFILL){
-                map.removeLayer(allLayers[i].layerGroup);
-                break;
-            }
-        }
-    }
     });
 }
 
@@ -521,45 +524,46 @@ function removeReport(btn) {
                 resolve();
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                console.log("xhr.status = " + xhr.status);
+                let err = (eval("(" + xhr.responseText + ")"));
+                alert("Error code: " + err.code + ", message: " + err.message);
                 reject();
             }
         });
     })).then(() => {
-        
+
     }).catch((error) => {
-        alert('neuspesno'); console.log(error);
+        //alert('neuspesno'); console.log(error);
     });
 
 }
 
-function updateLocations(fun){
+function updateLocations(fun) {
 
     let url = new URLSearchParams(window.location.search);
     if (url.has("operator")) {
         let button = document.createElement("button");
         button.innerHTML = "Remove";
         button.setAttribute("onclick", "removeReport(this)");
-        addLocations(function(data){
+        addLocations(function (data) {
             console.log("oper " + data);
             fun("update fin");
         }, button);
     } else {
-        addLocations(function(data){
+        addLocations(function (data) {
             //console.log("user " + data);
             fun("update fin");
-        }, undefined);	
+        }, undefined);
     }
 }
 
 var toggleMarkedLocation = false;
 function on_offMarkedLocations() {
-    
-    updateLocations(function(data){
+
+    updateLocations(function (data) {
 
         //console.log(data);
 
-        //toggleMarkedLocation = !toggleMarkedLocation;
+        toggleMarkedLocation = !toggleMarkedLocation;
         //console.log("toggleMarkedLocation = " + toggleMarkedLocation);
 
         if (toggleMarkedLocation) {
@@ -582,11 +586,11 @@ function on_offMarkedLocations() {
 
 }
 
-function saveUser(){
+function saveUser() {
     localStorage.clear();
     localStorage.setItem("user", window.location.search);
 }
 
-function dontWork(){
+function dontWork() {
     alert("Sorry, not implemented yet");
 }
