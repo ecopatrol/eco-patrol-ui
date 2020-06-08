@@ -89,7 +89,7 @@ function resolveParameters(pageParam){
         guest.style.visibility="hidden";
         userLogged=false;
     }
-    console.log(url.has("user"));
+    //console.log(url.has("user"));
 }
 
 function mapInit(){
@@ -101,7 +101,7 @@ function mapInit(){
     map.on('locationfound', function(ev){
     if(userLocation != undefined) map.removeLayer(userLocation);
     userLocation = L.marker(ev.latlng, {icon: makeIcon(MarkerColor.BLUE)}).bindPopup("You").addTo(map);
-    console.log("refresh");
+    //console.log("refresh");
 
     });
     map.on('locationerror', function(ev){
@@ -121,16 +121,16 @@ function mapInit(){
     }).addTo(map);
 
     //add locations sent from server
-    let url = new URLSearchParams(window.location.search);
+    //let url = new URLSearchParams(window.location.search);
 	
-    if (url.has("operator")) {
+    /*if (url.has("operator")) {
         let button = document.createElement("button");
         button.innerHTML = "Remove";
         button.setAttribute("onclick", "removeReport(this)");
         addLocations(button);
     } else {
-         addLocations();	
-    }
+        addLocations();	
+    }*/
   
 
     //set listener for selected position
@@ -230,12 +230,14 @@ function reportProblem(btn) {
     document.getElementById("reportForm").remove();
     console.log(obj);
     sendReportData(obj).then(() => {
-        alert('uspesno');
+        //alert('uspesno');
     }).catch((error) => {
-        alert('neuspesno'); console.log(error);
+        alert('neuspesno'); 
+        console.log(error);
     });
 
 }
+
 function sendReportData(data) {
     return new Promise((resolve, reject) => {
         $.ajax({
@@ -245,9 +247,9 @@ function sendReportData(data) {
             contentType: 'application/json',
             data: JSON.stringify(data),
             crossDomain: true,
-            sucess: function () {
+            success: function () {
+                alert('success, thank you');
                 resolve();
-                alert('uspesno');
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 //<ovde mozes da uzmes status requesta ako je neuspesan, da vidis zasto je neuspesan, to se nalazu u xhr.status>
@@ -260,17 +262,19 @@ function sendReportData(data) {
 
 
 //prepares layers to get inserted into map
-function addLocations(forPopups) {
+/*function addLocations(callback, forPopups) {
     let groups;
 
     fetchData(function (data) {
         groups = new EcoPatrolLayers(data, forPopups);
 
-        let bool = false;
-        if (allLayers.length != 0) {
-            allLayers = [];
-            bool = true;
-
+        if (allLayers.length != 0){
+            for(let i = 0; i < allLayers.length; i++){
+                map.removeLayer(allLayers[i].layerGroup);
+            }
+            toggleOffice = false;
+            toggleLandfills = false;
+            toggleOutposts = false;
         }
 
         for (let i = 0; i < groups.layers.length; i++) {
@@ -279,10 +283,34 @@ function addLocations(forPopups) {
                 layerGroup: L.layerGroup(groups.layers[i].arrayOfMarkers)
             });
         }
-        if (bool){
-            on_offMarkedLocations();
+        
+        callback();
+    });
+}*/
+
+function addLocations(fun, forPopup){
+    let groups;
+
+    fetchData(function(data){
+        //console.log("server data.lenght = " + data.length);
+        
+        groups = new EcoPatrolLayers(data, forPopup);
+
+        if (allLayers.length > 0){
+            for(let i = 0; i < allLayers.length; i++){
+                map.removeLayer(allLayers[i].layerGroup);
+                allLayers.shift();
+            }
         }
 
+        for (let i = 0; i < groups.layers.length; i++) {
+            allLayers.push({                                        //allLayers is global variable
+                layerName: groups.layers[i].layerName,
+                layerGroup: L.layerGroup(groups.layers[i].arrayOfMarkers)
+            });
+        }
+        
+        fun("addLocations fin");
     });
 }
 
@@ -390,7 +418,8 @@ function findLocation(){
 //next 4 functions add/remove corresponding layers to map 
 var toggleOffice = false;
 function on_offOfince(){
-    toggleOffice = !toggleOffice;
+    updateLocations(function(data){
+        toggleOffice = !toggleOffice;
     
     if (toggleOffice){
         for(let i = 0; i < allLayers.length; i++){
@@ -407,11 +436,13 @@ function on_offOfince(){
             }
         }
     }
+    });
 }
 
 var toggleOutposts = false;
 function on_offOutposts(){
-    toggleOutposts = !toggleOutposts;
+    updateLocations(function(data){
+        toggleOutposts = !toggleOutposts;
     
     if (toggleOutposts){
         for(let i = 0; i < allLayers.length; i++){
@@ -428,11 +459,14 @@ function on_offOutposts(){
             }
         }
     }
+    });
 }
 
 var toggleLandfills = false;
 function on_offLandfills(){
-    toggleLandfills = !toggleLandfills;
+    
+    updateLocations(function(data){
+        toggleLandfills = !toggleLandfills;
     
     if (toggleLandfills){
         for(let i = 0; i < allLayers.length; i++){
@@ -449,7 +483,9 @@ function on_offLandfills(){
             }
         }
     }
+    });
 }
+
 function removeReport(btn) {
     //console.log(btn.parentNode.getAttribute("name"));
     let data = btn.parentNode.getAttribute("name").split(" ");
@@ -497,26 +533,52 @@ function removeReport(btn) {
 
 }
 
+function updateLocations(fun){
+
+    let url = new URLSearchParams(window.location.search);
+    if (url.has("operator")) {
+        let button = document.createElement("button");
+        button.innerHTML = "Remove";
+        button.setAttribute("onclick", "removeReport(this)");
+        addLocations(function(data){
+            console.log("oper " + data);
+            fun("update fin");
+        }, button);
+    } else {
+        addLocations(function(data){
+            //console.log("user " + data);
+            fun("update fin");
+        }, undefined);	
+    }
+}
+
 var toggleMarkedLocation = false;
 function on_offMarkedLocations() {
-    toggleMarkedLocation = !toggleMarkedLocation;
+    
+    updateLocations(function(data){
 
-    if (toggleMarkedLocation) {
+        //console.log(data);
 
-        for (let i = 0; i < allLayers.length; i++) {
-            if (allLayers[i].layerName == Tag.MARKEDLOCATION || allLayers[i].layerName == Tag.WILD_DUMP ||
-                allLayers[i].layerName == Tag.BURNING_CONTAINER || allLayers[i].layerName == Tag.OVERFLOWING_CONTAINER) {
-                allLayers[i].layerGroup.addTo(map);
+        //toggleMarkedLocation = !toggleMarkedLocation;
+        //console.log("toggleMarkedLocation = " + toggleMarkedLocation);
+
+        if (toggleMarkedLocation) {
+
+            for (let i = 0; i < allLayers.length; i++) {
+                if (allLayers[i].layerName == Tag.MARKEDLOCATION || allLayers[i].layerName == Tag.WILD_DUMP ||
+                    allLayers[i].layerName == Tag.BURNING_CONTAINER || allLayers[i].layerName == Tag.OVERFLOWING_CONTAINER) {
+                    allLayers[i].layerGroup.addTo(map);
+                }
+            }
+        } else {
+            for (let i = 0; i < allLayers.length; i++) {
+                if (allLayers[i].layerName == Tag.MARKEDLOCATION || allLayers[i].layerName == Tag.WILD_DUMP ||
+                    allLayers[i].layerName == Tag.BURNING_CONTAINER || allLayers[i].layerName == Tag.OVERFLOWING_CONTAINER) {
+                    map.removeLayer(allLayers[i].layerGroup);
+                }
             }
         }
-    } else {
-        for (let i = 0; i < allLayers.length; i++) {
-            if (allLayers[i].layerName == Tag.MARKEDLOCATION || allLayers[i].layerName == Tag.WILD_DUMP ||
-                allLayers[i].layerName == Tag.BURNING_CONTAINER || allLayers[i].layerName == Tag.OVERFLOWING_CONTAINER) {
-                map.removeLayer(allLayers[i].layerGroup);
-            }
-        }
-    }
+    });
 
 }
 
