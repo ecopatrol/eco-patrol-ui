@@ -165,10 +165,8 @@ function createForm() {
 
 
     elem = document.createElement("h3");
+    elem.id = "title"
     elem.textContent = "Report";
-    form.appendChild(elem);
-
-    elem = document.createElement("br");
     form.appendChild(elem);
 
     elem = document.createElement("select");
@@ -191,7 +189,7 @@ function createForm() {
     elem.classList.add("inFormElem");
     elem.placeholder = "Description";
     elem.cols = 20;
-    elem.rows = 3;
+    elem.rows = 6;
     elem.id = "desc";
     form.appendChild(elem);
 

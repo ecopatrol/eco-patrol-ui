@@ -237,6 +237,8 @@ main{
     padding: 0.5em;
     outline: none;  
     cursor: pointer;
+    width: 50%;
+    transform: translate(50%);
 }
 
 .repBtn:hover {
@@ -258,6 +260,10 @@ main{
 }
 
 .reportForm{
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-rows: 20% 20% 40% 20%
+}
+
+.reportForm #title {
+    transform: translate(35%);
 }
