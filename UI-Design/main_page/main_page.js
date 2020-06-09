@@ -293,7 +293,7 @@ function addLocations(fun, forPopup) {
         groups = new EcoPatrolLayers(data, forPopup);
 
         if (allLayers.length > 0) {
-            for (let i = 0; i < allLayers.length; i++) {
+            for (let i = 0; 0 < allLayers.length; ) {
                 map.removeLayer(allLayers[i].layerGroup);
                 allLayers.shift();
             }
@@ -311,7 +311,14 @@ function addLocations(fun, forPopup) {
 }
 
 function fetchData(onDone) {
-    let serverData = [];
+    let serverData = [
+        [44.773595, 20.475412, Tag.LANDFILL, "FPN"],
+        [44.772966, 20.475031, Tag.LANDFILL,"FON"],
+        [44.80626, 20.460272, Tag.LANDFILL, "Vlada Srbije"],
+        [44.811668, 20.465983,	Tag.LANDFILL, "Narodna Skupstina"],
+        [44.806016, 20.44744, Tag.LANDFILL,	"Beograd na vodi"],
+        [44.874967, 20.646583, Tag.OFFICE,	"Kancelarija"]
+    ];
     $.getJSON('http://localhost:3000/reports', function (data) {
         $.each(data, function (index) {
             let point = [];
@@ -379,6 +386,8 @@ class EcoPatrolLayers {
     }
 
 }
+
+
 
 function makeIcon(color) {
 
