@@ -32,3 +32,10 @@ pics{
 th,td{
     padding: 10px;
 }
+
+footer {
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    color:green;
+   }

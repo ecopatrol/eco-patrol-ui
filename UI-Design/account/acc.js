@@ -38,9 +38,9 @@ window.onload = function () {
         // Change type to "doughnut", "line", "splineArea", etc.
         type: "column",
         dataPoints: [
-            { label: "WILD DUMP",  y: burn  },
-            { label: "BURNING CONTAINER", y: over },
-            { label: "OVERFLOWING CONTAINER", y: wild  },
+            { label: "WILD DUMP",  y:  wild  },
+            { label: "BURNING CONTAINER", y: burn },
+            { label: "OVERFLOWING CONTAINER", y: over  },
             
             ]
             }
@@ -158,18 +158,27 @@ function editUserName(){
         alert("New username is not valid!");
         return;
     }
-    console.log(1);
     if($("#uname").val()==""){
         alert("New username is not valid!");
         return;
     }
-    console.log(2);
     var string=($("#uname").val());
     if(/^\w+$/.test(string)==false){
         alert("New username is not valid!");
         return;
     }
 
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test($("#email").val()) == false) {
+        alert("E-mail not vaid!");
+        return;
+    }
+    string=($("addr").val());
+    if(/^\w+$/.test(string)==false){
+        alert("New address is not valid!");
+        return;
+    }
+
+    
 
 
 
@@ -190,7 +199,7 @@ function editUserName(){
         contentType: 'application/json',
         crossDomain:true,
         success:function(){
-            edit_him($("#uname").val());
+            edit_him($("#uname").val(),$("#email").val(),$("#addr").val(),$("#phone").val());
         },
         error:function(xhr, ajaxOptions, thrownError){
             console.log(thrownError);
@@ -202,10 +211,13 @@ function editUserName(){
 
 }
 
-function edit_him(new_name){
+function edit_him(new_name,email,address,phone){
 
     var new_user =  {        
         "username":new_name,
+        "email":email,
+        "address":address,
+        "phone":phone,
     }
 
     var username=window.location.search.substring(1).split("&")[0].split("=")[1];
@@ -218,7 +230,7 @@ function edit_him(new_name){
         contentType: 'application/json',
         crossDomain:true,
         success:function(){
-           alert("Your name is successfuly changed!")
+           alert("Your personal data are successfuly changed!")
         },
         error:function(xhr, ajaxOptions, thrownError){
             console.log(thrownError);

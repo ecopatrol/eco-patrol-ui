@@ -36,11 +36,17 @@ function OrderItem(awardName) {
             }
         });
     })).then(() => {
-        //alert('uspesno');
+       
     }).catch((error) => {
         //alert('neuspesno');
         console.log(error);
     });
 
 
+}
+
+
+function home(){
+    var username=localStorage.getItem("user").substr(1).split("=")[1];
+    window.location.href="../main_page/main_page.html?user="+username;
 }

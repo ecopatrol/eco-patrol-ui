@@ -11,3 +11,10 @@
     background-color:white;
 
 }
+
+footer {
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    color:white;
+   }
