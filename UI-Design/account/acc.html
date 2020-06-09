@@ -6,44 +6,22 @@
     <link rel="icon" href="./slike/logo.jpg"> <!--Tab Ikonica-->    
     <link rel="stylesheet" href="style.css">
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+   
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"><!--BootStrap-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
- 
-   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-   <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-   <script type="text/javascript">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+   <!-- <script  src="https://www.gstatic.com/charts/loader.js"></script>--> 
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="acc.js"></script>
+    
 
-    window.onload = function () {
-	    var chart = new CanvasJS.Chart("chartContainer", {
-		    title:{
-			text: "Your Patrols"              
-	    	},
-	      data: [              
-		{
-			// Change type to "doughnut", "line", "splineArea", etc.
-			type: "column",
-			dataPoints: [
-				{ label: "Divlja Deponija",  y: 10  },
-				{ label: "Opasne Materije", y: 15  },
-				{ label: "Narusena Zelena Povrsina", y: 25  },
-				{ label: "Gradjeviniski sut",  y: 30  },
-				{ label: "Otrovan Ker",  y: 28  }
-	    		]
-		        }
-		    ]
-	});
-	chart.render();
-}
-
-</script>
-
+    
 
 </head>
 
 
-<body style="background-color: #cccccc;">
+<body style="background-color: #cccccc;"  >
 
     <nav class="navbar navbar-expand-lg navbar-light bg-dark" style="border: 2px solid white;">
 
@@ -74,14 +52,15 @@
 
                     <div class="card-body bg-white" >
 
-                     <h3 class="card-title text-center" >User Full Name</h3>
-                     <h4 class="card-title text-center text-muted">UserName</h4>
+                     <h3 class="card-title text-center" id="nameHead" >User Full Name</h3>
+                     <hr>
+                
                         <table >
 
                             <tr>
                                 <td>
                                      <div class="text-left" >
-                                        <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#Info">
+                                        <button type="button" onclick="open_edit()" class="btn btn-dark">
 
                                             Edit My Profile
                                     
@@ -99,7 +78,7 @@
                             <td>
                                 
                                      <div class="text">
-                                       <button  onclick="../main_page/main_page.html"   class="btn btn-dark" >
+                                       <button onclick="modal_open()" class="btn btn-dark" >
                                            Delte My Profile
                            
                                         </button>
@@ -126,7 +105,7 @@
                                             <h5>Please Enter new values and Confirm new data!</h5>
                                             <hr>
                                             <label for="fname">UserName:</label>
-                                            <input type="text" id="fname" name="fname">
+                                            <input type="text" id="uname" name="fname">
                                             <br>
                                             <label for="fmail">E-mail:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
                                             <input type="email" placeholder="me@gmail.com">
@@ -135,7 +114,7 @@
                                             <hr>
                                             <h5>Confirm your new data with your Password!</h5>
                                             <label for="ftel">Password: &nbsp;&nbsp; </label>
-                                            <input type="text" placeholder="XXXXXXXXX">
+                                            <input type="password" id="epass" placeholder="re-enter password">
                                             
                                         
                                             
@@ -145,7 +124,7 @@
                                         <div class="modal-footer">
 
                                             <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-success" data-dismiss="modal">Save And Exit</button>
+                                            <button type="button" class="btn btn-success" onclick="editUserName()" data-dismiss="modal">Save And Exit</button>
                                         </div>
                                     </div>
                                 </div>
@@ -175,9 +154,9 @@
                             <hr>
                             <h3>Surname :</h3>
                             <hr>
-                            <h3>Points :</h3>
+                            <h3 id="points">Points :</h3>
                             <hr>
-                            <h3>E-mail :</h3>
+                            <h3 id="email">E-mail :</h3>
                             <hr>
                             <h3>Adress :</h3>
                             <hr>
@@ -198,7 +177,7 @@
 
         <hr>
 
-        <br>
+        <br>       
 
         
         <div class="row">
@@ -212,14 +191,34 @@
            
     </div>
 
-
-        <br>
-
-        <br>
-        <br>
-
+    <div id="modal" class="modal fade" role="dialog"><
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" >Delete my Profile</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <h4>Please eneter your password again!<h4>
+              <lable>PASSWORD :</lable>
+              <input  id="input_pass" type="password">
+            
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" style="font-weight: bold;" onclick="delete_me()">DELETE MY PROFILE</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-weight: bold;">CLOSE</button>
+            </div>
+          </div>
+        </div>
+      </div>
     
 
+      
+    <br>
+    <br>
+    <br>
     <footer >
 
         <h2 class="text-center bg-dark"><b>ECO PATROL</b></h2>
