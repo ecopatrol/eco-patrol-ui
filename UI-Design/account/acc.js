@@ -1,4 +1,4 @@
-giwindow.onload = function () {
+window.onload = function () {
 
     var dataRequest=new XMLHttpRequest();
     
@@ -71,10 +71,12 @@ var userRequest=new XMLHttpRequest();
     userRequest.onload=function(){
 
         var data=JSON.parse(userRequest.responseText);
-
-    
-
+        console.log(data);
+        $("#name").html("Name : "+data[0].name);
+        $("#surname").html("Surname : "+data[0].surname);
+        $("#phone").html("Phone : "+data[0].phone);
         $("#nameHead").html(data[0].username);
+        $("#addres").html("Address : "+data[0].address);
         $("#email").html("E-mail :"+" "+data[0].email);
         $("#points").html("Points :"+" "+data[0].points);
     }
@@ -228,4 +230,9 @@ function edit_him(new_name){
 
 
 
+}
+
+function home(){
+    var username=window.location.search.substring(1).split("&")[0].split("=")[1];
+    window.location.href="../main_page/main_page.html?user="+username;
 }

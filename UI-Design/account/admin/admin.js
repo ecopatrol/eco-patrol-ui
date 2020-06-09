@@ -36,7 +36,7 @@ function makeAsOperator(user){
         url:"http://localhost:3000/users/operator/"+username,
         type:'POST',
         success:function(result){
-
+            alert("User is set as operator!");
         },
         error:function (params) {
             console.log("Error");
@@ -67,4 +67,9 @@ function deleteMe(user){
 
 function DummyFun(user) {
     
+}
+
+function home(){
+  
+    window.location.href="../../main_page/main_page.html";
 }

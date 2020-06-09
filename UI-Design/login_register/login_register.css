@@ -27,7 +27,6 @@ body,html{
 }
 
 .box1{
-   
     position: absolute;
     width: 350px;
     padding: 40px;
@@ -46,7 +45,7 @@ body,html{
     text-align: center;
     top: 50%;
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%,-35%);
     color:black;
 }
 
@@ -58,7 +57,7 @@ body,html{
 
 
 
-.box input[type = "text"], .box input[type = "password"]{
+.box input[type = "text"], .box input[type = "password"], .box input[type = "number"]{
     border: 0;
     background:  none;
     display: block;
@@ -73,13 +72,13 @@ body,html{
     transition: 0.25s;
 }
 
-.box input[type = "text"]:focus, .box input[type = "password"]:focus{
+.box input[type = "text"]:focus, .box input[type = "password"]:focus, .box input[type = "number"]:focus{
 
     width: 280px;
     border-color: var(--borderColor);
 }
 
-.box input[type = "text"]:hover, .box input[type = "password"]:hover{
+.box input[type = "text"]:hover, .box input[type = "password"]:hover, .box input[type = "number"]:hover{
     width: 280px;
     border-color: var(--borderColor);
 }
@@ -92,7 +91,7 @@ body,html{
     margin-bottom: 5px;
     text-align: center;
     border: 2px solid var(--borderColor);
-    padding: 14px 40px;
+    padding: 14px 20px;
     outline: none;
     color:black;
     border-radius: 24px;
@@ -117,3 +116,68 @@ a:hover{
 .dsol{
     display: none;
 }
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type = number]{
+    -moz-appearance: textfield;
+}
+
+
+.box1 h1{
+    color: black;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+
+
+.box1 input[type = "text"], .box1 input[type = "password"], .box1 input[type = "number"]{
+    border: 0;
+    background:  none;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid var(--inputDefaultBorderColor);
+    padding: 14px 10px;
+    width: 200px;
+    outline: none;
+    color: black;
+    border-radius: 24px;
+    transition: 0.25s;
+}
+
+.box1 input[type = "text"]:focus, .box1 input[type = "password"]:focus, .box1 input[type = "number"]:focus{
+
+    width: 280px;
+    border-color: var(--borderColor);
+}
+
+.box1 input[type = "text"]:hover, .box1 input[type = "password"]:hover, .box1 input[type = "number"]:hover{
+    width: 280px;
+    border-color: var(--borderColor);
+}
+
+.box1 button{
+    border: 0;
+    background:  none;
+    display: block;
+    margin: 20px auto;
+    margin-bottom: 5px;
+    text-align: center;
+    border: 2px solid var(--borderColor);
+    padding: 14px 20px;
+    outline: none;
+    color:black;
+    border-radius: 24px;
+    transition: 0.25s;
+    cursor: pointer;
+}
+
+.box1 button:hover{
+    background: var(--borderColor);
+}
+
