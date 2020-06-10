@@ -64,7 +64,7 @@ function loadData(username){
 
 var userRequest=new XMLHttpRequest();
     
-    userRequest.open("GET","http://localhost:3000/users/account/"+username);
+userRequest.open("GET","http://localhost:3000/users/account/"+username);
 
 
 
@@ -74,10 +74,10 @@ var userRequest=new XMLHttpRequest();
         console.log(data);
         $("#name").html("Name : "+data[0].name);
         $("#surname").html("Surname : "+data[0].surname);
-        $("#phone").html("Phone : "+data[0].phone);
+        $("#Phone").html("Phone : "+data[0].phone);
         $("#nameHead").html(data[0].username);
         $("#addres").html("Address : "+data[0].address);
-        $("#email").html("E-mail :"+" "+data[0].email);
+        $("#Email").html("E-mail :"+" "+data[0].email);
         $("#points").html("Points :"+" "+data[0].points);
     }
 
@@ -136,7 +136,7 @@ function delete_him(obj){
         type:"DELETE",
         success: function(result) {
             alert("Profile is successfuly deleted!");
-            window.location.href="http://127.0.0.1:5500/main_page/main_page.html#";  
+            window.location.href="../main_page/main_page.html";  
         },
         error:function (){
             console.log("Error");
@@ -149,7 +149,31 @@ function open_edit(){
 
     $("#Info").modal("toggle");
 
+
+    var userRequest=new XMLHttpRequest();
+    var username=window.location.search.substring(1).split("&")[0].split("=")[1];
+    userRequest.open("GET","http://localhost:3000/users/account/"+username);
+
+    userRequest.onload=function(){
+
+        var data=JSON.parse(userRequest.responseText);
+        console.log(data);
+
+        $("#uname").val(data[0].username);
+        $("#email").val(data[0].email);
+        $("#phone").val(data[0].phone);
+        $("#addr").val(data[0].address);
+    }
+    userRequest.onerror=function(){
+        console.log("Greska kod dohvatanja podataka!");
+    }
+
+    userRequest.send();
 }
+
+
+
+
 
 
 function editUserName(){
@@ -213,6 +237,11 @@ function editUserName(){
 
 function edit_him(new_name,email,address,phone){
 
+    console.log(new_name);
+    console.log(email);
+    console.log(address);
+    console.log(phone);
+    console.log(points);
     var new_user =  {        
         "username":new_name,
         "email":email,
@@ -221,7 +250,7 @@ function edit_him(new_name,email,address,phone){
     }
 
     var username=window.location.search.substring(1).split("&")[0].split("=")[1];
-
+    console.log(username);
     $.ajax({
         type:"PUT",
         url:"http://localhost:3000/users/"+username,
@@ -230,7 +259,8 @@ function edit_him(new_name,email,address,phone){
         contentType: 'application/json',
         crossDomain:true,
         success:function(){
-           alert("Your personal data are successfuly changed!")
+           alert("Your personal data are successfuly changed!");
+           window.location.href="../main_page/main_page.html?user="+new_name;
         },
         error:function(xhr, ajaxOptions, thrownError){
             console.log(thrownError);
