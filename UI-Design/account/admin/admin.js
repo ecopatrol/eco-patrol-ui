@@ -55,7 +55,7 @@ function deleteMe(user){
         url:"http://localhost:3000/deleteUser/"+username,
         type:"DELETE",
         success: function(result) {
-            
+            alert("User is deleted!");
         },
         error:function (){
             console.log("Error");
