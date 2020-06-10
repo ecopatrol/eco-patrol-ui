@@ -241,7 +241,7 @@ function sendReportData(data) {
             data: JSON.stringify(data),
             crossDomain: true,
             success: function () {
-                alert('success, thank you');
+                //alert('success, thank you');
                 resolve();
             },
             error: function (xhr, ajaxOptions, thrownError) {
@@ -284,7 +284,7 @@ function sendReportData(data) {
     });
 }*/
 
-function addLocations(fun, forPopup) {
+function addLocations(callBackFun, forPopup) {
     let groups;
 
     fetchData(function (data) {
@@ -306,7 +306,7 @@ function addLocations(fun, forPopup) {
             });
         }
 
-        fun("addLocations fin");
+        callBackFun("addLocations fin");
     });
 }
 
@@ -493,7 +493,7 @@ function on_offLandfills() {
 
 function removeReport(btn) {
     //console.log(btn.parentNode.getAttribute("name"));
-    let data = btn.parentNode.getAttribute("name").split(" ");
+    let data = btn.parentNode.parentNode.getAttribute("name").split(" ");
 
     //console.log(data[0]);
     //console.log(data[1]);
@@ -519,7 +519,7 @@ function removeReport(btn) {
                 button.innerHTML = "Remove";
                 button.setAttribute("onclick", "removeReport(this)");
                 //console.log(button);
-                addLocations(button);
+                addLocations(function(){},button);
 
                 on_offMarkedLocations();
                 //on_offMarkedLocations();
@@ -543,13 +543,12 @@ function updateLocations(fun) {
 
     let url = new URLSearchParams(window.location.search);
     if (url.has("operator")) {
-        let button = document.createElement("button");
-        button.innerHTML = "Remove";
-        button.setAttribute("onclick", "removeReport(this)");
+        let operDiv = createOperForm();
+        //console.log(operDiv);
         addLocations(function (data) {
-            console.log("oper " + data);
+            //console.log("oper " + data);
             fun("update fin");
-        }, button);
+        }, operDiv);
     } else {
         addLocations(function (data) {
             //console.log("user " + data);
@@ -602,4 +601,46 @@ function myProfil(){
     var user=window.location.search.substring(1).split("&")[0].split("=")[1];
     console.log(user);
     window.location.href = "../account/acc.html?user="+user;
+}
+
+function createOperForm(){
+    let elem;
+    let form = document.createElement("div");
+    form.classList.add("operForm");
+    form.id = "operForm";
+
+    elem = document.createElement("select");
+    elem.classList.add("inFormElem");
+    //
+    let tmp = document.createElement("option");
+    tmp.text = "Zelenilo Pancevo";
+    elem.add(tmp);
+    tmp = document.createElement("option");
+    tmp.text = "Zelenilo Beograd";
+    elem.add(tmp);
+    tmp = document.createElement("option");
+    tmp.text = "Zelenilo Novi Sad";
+    elem.add(tmp);
+    //
+    form.appendChild(elem);
+
+    elem = document.createElement("input");
+    elem.type = "button";
+    elem.value = "Submit";
+    elem.classList.add("inFormElem");
+    elem.classList.add("repBtn");
+    elem.classList.add("operBtn");
+    elem.setAttribute("onclick", "removeReport(this)");
+    form.appendChild(elem);
+
+    elem = document.createElement("input");
+    elem.type = "button";
+    elem.value = "Reject";
+    elem.classList.add("inFormElem");
+    elem.classList.add("repBtn");
+    elem.classList.add("operBtn");
+    elem.setAttribute("onclick", "removeReport(this)");
+    form.appendChild(elem);
+
+    return form;
 }

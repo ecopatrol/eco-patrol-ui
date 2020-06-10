@@ -93,7 +93,8 @@ function RegistrationControl() {
     //in this function we are checking user info inputs!
 
     if (document.regForm.user.value == "" || document.regForm.email.value == "" ||
-        document.regForm.pass.value == "" || document.regForm.rPass.value == "") {
+        document.regForm.pass.value == "" || document.regForm.rPass.value == ""||
+        document.regForm.name.value == "" || document.regForm.surname.value == "") {
         alert("One or more fields are not filled!");
         return;
     }
@@ -181,7 +182,7 @@ function sendRegData(data) {
                 }
 
                 let err = (eval("(" + xhr.responseText + ")"));
-                alert("Error code: " + err.code + ", message: " + err.message);
+                //alert("Error code: " + err.code + ", message: " + err.message);
                 reject();
             }
         });

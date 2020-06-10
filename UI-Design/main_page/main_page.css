@@ -267,3 +267,16 @@ main{
 .reportForm #title {
     transform: translate(35%);
 }
+
+.operForm{
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+}
+
+.operForm input[type = "button"]{
+    width: 100%;
+}
+
+.operBtn{
+    transform: translate(0%);
+}
