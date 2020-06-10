@@ -19,10 +19,10 @@ window.onload = function () {
             burn=data[0].count;
         }
         if(data.length>=2){
-            over=data[1].count;
+            wild=data[1].count;
         }
         if(data.length>=3){
-            wild=data[2].count;
+            over=data[2].count;
         }
 
 
