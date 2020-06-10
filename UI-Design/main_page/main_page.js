@@ -423,6 +423,9 @@ function findLocation() {
 //next 4 functions add/remove corresponding layers to map 
 var toggleOffice = false;
 function on_offOfince() {
+    toggleLandfills=false;
+    toggleMarkedLocation=false;
+    toggleOutposts=false;
     updateLocations(function (data) {
         toggleOffice = !toggleOffice;
 
@@ -446,6 +449,9 @@ function on_offOfince() {
 
 var toggleOutposts = false;
 function on_offOutposts() {
+    toggleLandfills=false;
+    toggleMarkedLocation=false;
+    toggleOffice=false;
     updateLocations(function (data) {
         toggleOutposts = !toggleOutposts;
 
@@ -469,7 +475,9 @@ function on_offOutposts() {
 
 var toggleLandfills = false;
 function on_offLandfills() {
-
+    toggleOutposts=false;
+    toggleMarkedLocation=false;
+    toggleOffice=false;
     updateLocations(function (data) {
         toggleLandfills = !toggleLandfills;
 
@@ -559,7 +567,9 @@ function updateLocations(fun) {
 
 var toggleMarkedLocation = false;
 function on_offMarkedLocations() {
-
+    toggleOutposts=false;
+    toggleLandfills=false;
+    toggleOffice=false;
     updateLocations(function (data) {
 
         //console.log(data);

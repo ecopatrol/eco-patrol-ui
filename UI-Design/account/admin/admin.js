@@ -56,6 +56,8 @@ function deleteMe(user){
         type:"DELETE",
         success: function(result) {
             alert("User is deleted!");
+            window.location.href="admin.html";
+           
         },
         error:function (){
             console.log("Error");
