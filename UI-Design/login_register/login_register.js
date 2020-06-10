@@ -107,9 +107,7 @@ function RegistrationControl() {
         alert("Password and Repeat password fields do not match!");
         return;
     }
-
-
-
+    
     if (/^\w+$/.test(document.regForm.user.value) == false) {
         alert("Special characters not allowed in username section!");
         return;
@@ -129,6 +127,7 @@ function RegistrationControl() {
         alert("Phone number not valid");
         return;
     }
+
 
     sendRegistrationRequest()
 
