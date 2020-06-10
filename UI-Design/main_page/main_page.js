@@ -527,7 +527,7 @@ function removeReport(btn) {
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 let err = (eval("(" + xhr.responseText + ")"));
-                alert("Error code: " + err.code + ", message: " + err.message);
+                //alert("Error code: " + err.code + ", message: " + err.message);
                 reject();
             }
         });
